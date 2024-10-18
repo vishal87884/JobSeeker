@@ -1,12 +1,27 @@
 import java.util.Scanner;
+import java.sql.Statement;
 
 public class Main {
 
     static int id=0;
     static String password="";
+
+    Main(){
+        jdbc.connection();
+
+        try{
+            String q = "DELETE FROM seaker_data WHERE dt < (CURDATE() - INTERVAL 7 DAY)";
+            Statement st=jdbc.con.createStatement();
+            st.executeQuery(q);
+        }catch(Exception e){
+            System.out.println("Exception in working contruction");
+            System.out.println("automatically work is'nt working");
+        }
+
+    }
     public static void main(String[] args) {
 
-        jdbc.connection();
+     
         // System.out.println(jdbc.con);
         Scanner scanner = new Scanner(System.in);
         

@@ -1,0 +1,64 @@
+create table seaker_data(
+id int primary key,
+name varchar(50),
+mobile_no bigint(10) ,
+mail varchar(255),
+age int,
+skills Varchar(255),
+address varchar(255),
+experienced varchar(10),
+project varchar(10),
+date Date 
+);
+
+-------------------
+
+create table jobs(
+sno int ,
+post varchar(255),
+salary varchar(255),
+timing varchar(255),
+availablepost int ,
+ Date date ,
+summary varchar(45) ,
+location varchar(45) ,
+ experience varchar(45));
+------------------------
+
+create table project(
+id int primary key ,
+pName varchar(50),
+skills_used varchar(255),
+summary varchar(999));
+
+----------------------
+
+create table experience(
+id int primary key,
+cName varchar(50),
+jobTittle varchar(300),
+starts Date,
+ends Date);
+
+----------------------
+
+CREATE TABLE pdf_files (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    resume_pdf LONGBLOB NOT NULL
+);
+
+-----------------------
+
+create table js_acc(
+	id int primary key,
+    pass varchar(255) ,
+    role varchar(45));
+
+---------------------------
+
+create table application(
+    id int,
+    job int ,
+    status  varchar(45)
+);

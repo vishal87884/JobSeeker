@@ -1,4 +1,5 @@
 import java.util.Scanner;
+// import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class Main {
@@ -34,7 +35,10 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("Employ selected.");
-                           Employee.employeeLogin();
+                        // Employee em = new Employee();
+                        // em.mainWorkEmployee();
+                        Employee.employeeLogin();
+
                         break;
                     case 3:
                         System.out.println("Job Seeker selected.");
@@ -57,13 +61,40 @@ public class Main {
             }
         }
     }
+
     public static void startHook(){
         jdbc.connection();
 
         try{
-            String q = "DELETE FROM seaker_data WHERE date < (CURDATE() - INTERVAL 7 DAY)";
-            Statement st=jdbc.con.createStatement();
-            st.executeUpdate(q);
+            Statement st = jdbc.con.createStatement();
+
+            String forPost = "DELETE from jobs where Date < (CURDATE() - INTERVAL 7 DAY)";
+            st.executeUpdate(forPost);
+
+           
+            // String q  = "select id from seaker_data WHERE date < (CURDATE() - INTERVAL 7 DAY)";
+            // ResultSet rs= st.executeQuery(q);
+
+            // while(rs.next()){
+            //     int tempid = rs.getInt(id);
+            //     String q1;
+                
+            //     q1= "DELETE from experience where id = "+tempid;
+            //     st.executeUpdate(q1);
+                
+            //     q1= "DELETE from project where id = "+tempid;
+            //     st.executeUpdate(q1);
+                
+            //     q1= "DELETE from application where id = "+tempid;
+            //     st.executeUpdate(q1);
+                
+            //     q1= "DELETE from js_acc where id = "+tempid;
+            //     st.executeUpdate(q1);
+                
+            //     q1= "DELETE from seaker_data where id = "+tempid;
+            //     st.executeUpdate(q1);
+            // }
+
         }catch(Exception e){
            System.out.println("Start up hook does'nt start");
            System.out.println(e);

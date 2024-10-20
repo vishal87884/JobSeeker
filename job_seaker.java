@@ -59,24 +59,15 @@ public class job_seaker {
             // String query="select * from jobs"
             st = jdbc.con.createStatement();
             rs = st.executeQuery("select * from jobs");
-
+            // System.out.println(rs.next());
             // String [] postsarray = new String[5];
-            while (rs.next()) {
-                
-
-                // int id = rs.getInt("sno");
-                // String post = rs.getString("post");
-                // String salary = rs.getString("salary");
-                // String timing = rs.getString("timing");
-                // int seats = rs.getInt("availablepost");
-
-                // postsarray[0]=rs.getString("sno");
-                // postsarray[1]=rs.getString("post");
-                // postsarray[2]=rs.getString("salary");
-                // postsarray[3]=rs.getString("timing");
-                // postsarray[4]=rs.getString("available post");
-    
-                // System.out.println("-------------------------------------------------------------");
+            if(!rs.isBeforeFirst()){
+                System.out.println("There is no job available at this time");
+                return;
+            }
+        
+            while (rs.next()==true) {
+               
                 System.out.println("_______________________________________________________________");
                 // System.out.printf("| %-60s|%n","-------------------------------------------------------------");
                 // System.out.printf("| %-60s |%n","Serial number -> "+rs.getString("sno"));
@@ -88,11 +79,11 @@ public class job_seaker {
                 System.out.printf("| %-60s |%n","  "+rs.getString("timing"));
                 System.out.printf("| %-60s |%n","  "+rs.getString("location"));
                 System.out.printf("| %-60s |%n","  "+rs.getDate("Date"));
-                System.out.printf("| %-60s |%n","  "+rs.getDate("interview_Date"));
                 // System.out.println("-------------------------------------------------------------");
                 System.out.printf("|%-60s|%n","______________________________________________________________");
                 System.out.println();
             }
+        
             // System.out.println(
             //         "--------------------------------------------------------------------------------------------------------------------------------------------------------");
 
@@ -142,6 +133,7 @@ public class job_seaker {
         System.out.println();
 
         // call post method so all of post are shown
+        
         posts();
 
         System.out.println("ENTER SERIAL NUMBER FOR SELECT POST ");
@@ -434,7 +426,7 @@ public class job_seaker {
 
             try {
                 st=jdbc.con.createStatement();
-                rs=st.executeQuery("select pass from js_acc where id = "+id+" ");
+                rs=st.executeQuery("select pass from js_acc where id = "+id+" and role='seaker' ");
                 int tempnum2=0;
                 while (rs.next()) {
                     String temp_pass = rs.getString("pass");

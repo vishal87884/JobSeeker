@@ -1,12 +1,14 @@
 import java.util.Scanner;
+import java.sql.Statement;
 
 public class Main {
 
     static int id=0;
     static String password="";
+
     public static void main(String[] args) {
 
-        jdbc.connection();
+        startHook();
         // System.out.println(jdbc.con);
         Scanner scanner = new Scanner(System.in);
         
@@ -53,6 +55,19 @@ public class Main {
                 System.out.println("Invalid input. Please enter a valid number.");
                 scanner.next(); // Clear the invalid input
             }
+        }
+    }
+
+    public static void startHook(){
+        jdbc.connection();
+
+        try{
+            String q = "DELETE FROM seaker_data WHERE date < (CURDATE() - INTERVAL 7 DAY)";
+            Statement st=jdbc.con.createStatement();
+            st.executeUpdate(q);
+        }catch(Exception e){
+           System.out.println("Start up hook does'nt start");
+           System.out.println(e);
         }
     }
 }

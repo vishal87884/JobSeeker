@@ -179,11 +179,25 @@ public class Employee {
             new Employee();
         }
         
-         private void manage() {
+        private void manage() {
             try {
                 job_seaker.posts();  // Assume this method lists all jobs
                 System.out.println("Enter the serial number to update:");
                 int sno = shortcut.changeformat(s.nextLine());  // Getting serial number
+        
+                // Check if the job exists
+                String checkQuery = "SELECT COUNT(*) FROM jobs WHERE sno = ?";
+                PreparedStatement checkPs = con.prepareStatement(checkQuery);
+                checkPs.setInt(1, sno);
+                ResultSet rs = checkPs.executeQuery();
+                rs.next();
+                int count = rs.getInt(1);
+                
+                // If no job with the provided serial number, show "Not Found" message
+                if (count == 0) {
+                    System.out.println("Job not found for the given serial number.");
+                    return;
+                }
         
                 // Display options for what the user wants to update
                 System.out.println("What do you want to update?");
@@ -249,7 +263,7 @@ public class Employee {
                         return;
                 }
         
-                // Execute the query
+                // Execute the update query
                 ps.executeUpdate();
                 System.out.println("Job details updated successfully.");
         

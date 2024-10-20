@@ -6,22 +6,9 @@ public class Main {
     static int id=0;
     static String password="";
 
-    Main(){
-        jdbc.connection();
-
-        try{
-            String q = "DELETE FROM seaker_data WHERE dt < (CURDATE() - INTERVAL 7 DAY)";
-            Statement st=jdbc.con.createStatement();
-            st.executeQuery(q);
-        }catch(Exception e){
-            System.out.println("Exception in working contruction");
-            System.out.println("automatically work is'nt working");
-        }
-
-    }
     public static void main(String[] args) {
 
-     
+        startHook();
         // System.out.println(jdbc.con);
         Scanner scanner = new Scanner(System.in);
         
@@ -68,6 +55,19 @@ public class Main {
                 System.out.println("Invalid input. Please enter a valid number.");
                 scanner.next(); // Clear the invalid input
             }
+        }
+    }
+
+    public static void startHook(){
+        jdbc.connection();
+
+        try{
+            String q = "DELETE FROM seaker_data WHERE dt < (CURDATE() - INTERVAL 7 DAY)";
+            Statement st=jdbc.con.createStatement();
+            st.executeQuery(q);
+        }catch(Exception e){
+            System.out.println("Exception in working contruction");
+            System.out.println("automatically work is'nt working");
         }
     }
 }

@@ -34,7 +34,7 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("Employ selected.");
-                       new Employee();
+                           Employee.employeeLogin();
                         break;
                     case 3:
                         System.out.println("Job Seeker selected.");

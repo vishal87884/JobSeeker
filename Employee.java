@@ -61,7 +61,7 @@ public class Employee {
             while (rs.next()) {
                 int candidateId = rs.getInt("id");
                 String name = rs.getString("name");
-                int mobileNo = rs.getInt("mobile_no");
+                long mobileNo = rs.getLong("mobile_no");  // Retrieves as long
                 String email = rs.getString("mail");
                 int age = rs.getInt("age");
                 String skills = rs.getString("skills");
@@ -146,7 +146,7 @@ public class Employee {
     //    return start+" "+day+" "+end+" "+dayEnd;
     // }
     private void newEmployee() {
-
+         
            }
            private void remove() {
             try {
@@ -192,7 +192,7 @@ public class Employee {
                 ResultSet rs = checkPs.executeQuery();
                 rs.next();
                 int count = rs.getInt(1);
-                
+        
                 // If no job with the provided serial number, show "Not Found" message
                 if (count == 0) {
                     System.out.println("Job not found for the given serial number.");
@@ -206,6 +206,7 @@ public class Employee {
                 System.out.println("3. Available Posts");
                 System.out.println("4. Experience");
                 System.out.println("5. Location");
+                System.out.println("6. Interview Date");
                 int choice = Integer.parseInt(s.nextLine());
         
                 String q = "";  // SQL query placeholder
@@ -258,6 +259,16 @@ public class Employee {
                         ps.setInt(2, sno);
                         break;
         
+                    case 6: // Update Interview Date
+                        System.out.println("Enter new Interview Date (yyyy-mm-dd):");
+                        String interviewDate = s.nextLine();
+                        java.sql.Date interviewSQLDate = java.sql.Date.valueOf(interviewDate);
+                        q = "UPDATE jobs SET interview_date = ? WHERE sno = ?";  // Update based on sno
+                        ps = con.prepareStatement(q);
+                        ps.setDate(1, interviewSQLDate);
+                        ps.setInt(2, sno);
+                        break;
+        
                     default:
                         System.out.println("Invalid choice.");
                         return;
@@ -272,6 +283,7 @@ public class Employee {
             }
             new Employee();
         }
+        
         
         private void add() {
             try {
@@ -307,11 +319,16 @@ public class Employee {
                 System.out.println("Enter The Company Name");
                 String company = s.nextLine();
         
+                // Input interview date
+                System.out.println("Enter The Interview Date (yyyy-mm-dd)");
+                String interviewDate = s.nextLine();
+                java.sql.Date interviewSQLDate = java.sql.Date.valueOf(interviewDate);
+        
                 // Get the current date
                 java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
         
-                // SQL query to insert data including the company
-                String q = "INSERT INTO jobs (post, salary, timing, availablepost, Date, summary, location, experience, company) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                // SQL query to insert data including the company and interview date
+                String q = "INSERT INTO jobs (post, salary, timing, availablepost, Date, summary, location, experience, company, interview_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
                 // Prepare the statement
                 ps = con.prepareStatement(q);
@@ -326,6 +343,7 @@ public class Employee {
                 ps.setString(7, location);
                 ps.setString(8, experience);
                 ps.setString(9, company);
+                ps.setDate(10, interviewSQLDate);  // Set the interview date
         
                 // Execute the query
                 ps.executeUpdate();

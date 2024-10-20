@@ -22,7 +22,9 @@ availablepost int ,
  Date date ,
 summary varchar(45) ,
 location varchar(45) ,
- experience varchar(45));
+ experience varchar(45),
+ interview_Date Date
+ );
 ------------------------
 
 create table project(

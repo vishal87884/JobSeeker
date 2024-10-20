@@ -88,6 +88,7 @@ public class job_seaker {
                 System.out.printf("| %-60s |%n","  "+rs.getString("timing"));
                 System.out.printf("| %-60s |%n","  "+rs.getString("location"));
                 System.out.printf("| %-60s |%n","  "+rs.getDate("Date"));
+                System.out.printf("| %-60s |%n","  "+rs.getDate("interview_Date"));
                 // System.out.println("-------------------------------------------------------------");
                 System.out.printf("|%-60s|%n","______________________________________________________________");
                 System.out.println();
@@ -504,7 +505,7 @@ public class job_seaker {
 
     public static void trackApplication(int id){
         try{
-            String query = "select j.company,j.post,a.status from application a join jobs j on j.sno == a.job where a.id = "+id  ;
+            String query = "select j.company,j.post,a.status from application a join jobs j on j.sno = a.job where a.id = "+id  ;
             st=jdbc.con.createStatement();
             rs=st.executeQuery(query);
 

@@ -371,6 +371,7 @@ public class job_seaker {
        System.out.println("-----------------------");
        System.out.println("1 -> login");
        System.out.println("2 -> signup");
+       System.out.println("3 -> Back");
 
        String selection = sc.nextLine();
        int select=shortcut.changeformat(selection);
@@ -465,6 +466,8 @@ public class job_seaker {
                 System.out.println("PROBLEM IN CHECKING DETAILS");
             }
 
+        }else if(select==3){
+
         }
         else{
             System.out.println("Invalid selection");
@@ -505,7 +508,6 @@ public class job_seaker {
                 System.out.printf("| %-10s | %-20s | %-10s |%n",
                    rs.getString("j.company"), rs.getString("j.post"), rs.getString("a.status") );
             }
-            
 
         }catch(Exception e){
             System.out.println("Error in recieving application details");

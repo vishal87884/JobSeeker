@@ -385,4 +385,47 @@ public class Employee {
       } 
       return defaultTime; 
     }
+
+     public static void employeeLogin(){
+        System.out.print("Enter Login id -> ");
+        int tempId = shortcut.changeformat(s.nextLine());
+
+        System.out.print("Enter password -> ");
+        String password= s.nextLine();
+
+        try {
+            Statement st=jdbc.con.createStatement();
+            rs=st.executeQuery("select pass from js_acc where id = "+tempId+" and role = 'employee'");
+            int tempnum2=0;
+            while (rs.next()) {
+                String temp_pass = rs.getString("pass");
+                if(temp_pass.equals(password)){
+                    tempnum2++;
+                }
+            }
+
+            if(tempnum2==0){
+               System.out.println("Your id and password is not found");
+               System.out.println("may be your password is incorrect");
+               System.out.println("or your id does'nt exist");
+              employeeLogin();
+            }else if(tempnum2==1){
+                System.out.println("------------------------------");
+                System.out.println("Logged in successfully");
+                System.out.println("------------------------------");
+
+               // run 
+               new Employee();
+            }
+            else{
+               System.out.println("error");
+               System.out.println("error in login job seaker account ");
+
+            }
+
+        }catch (Exception exception) {
+            System.out.println(exception);
+            System.out.println("PROBLEM IN CHECKING DETAILS");
+        }
+    }
 }

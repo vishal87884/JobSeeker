@@ -62,12 +62,12 @@ public class Main {
         jdbc.connection();
 
         try{
-            String q = "DELETE FROM seaker_data WHERE dt < (CURDATE() - INTERVAL 7 DAY)";
+            String q = "DELETE FROM seaker_data WHERE date < (CURDATE() - INTERVAL 7 DAY)";
             Statement st=jdbc.con.createStatement();
-            st.executeQuery(q);
+            st.executeUpdate(q);
         }catch(Exception e){
-            System.out.println("Exception in working contruction");
-            System.out.println("automatically work is'nt working");
+           System.out.println("Start up hook does'nt start");
+           System.out.println(e);
         }
     }
 }

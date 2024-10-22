@@ -28,7 +28,7 @@ public class Employee {
                 manageApplications();
                 break;
                 default:
-                
+                System.out.println("Exit......");
                 break;
         }
     }
@@ -96,7 +96,7 @@ public class Employee {
 
         // Ask for a new status for the selected candidate
         System.out.println("Enter new status for this candidate (Reject, Pending, Select):");
-        String newStatus = s.nextLine();
+        String newStatus = s.next();
 
         // Validate input
         if (!newStatus.equalsIgnoreCase("Reject") &&
@@ -105,17 +105,17 @@ public class Employee {
             System.out.println("Invalid status. Operation aborted.");
             return;
         }
+// Update the status for the selected candidate in the 'application' table
+String updateQuery = "UPDATE application SET status = ? WHERE id = ? AND job = ?";
+PreparedStatement updatePs = con.prepareStatement(updateQuery);
+updatePs.setString(1, newStatus);  // Correct order
+updatePs.setInt(2, selectedCandidateId);
+updatePs.setInt(3, sno);
 
-        // Update the status for the selected candidate in the 'application' table
-        String updateQuery = "UPDATE application SET status = ? WHERE id = ? AND job = ?";
-        PreparedStatement updatePs = con.prepareStatement(updateQuery);
-        updatePs.setString(1, newStatus);
-        updatePs.setInt(2, selectedCandidateId);
-        updatePs.setInt(3, sno);
+// Execute the update
+updatePs.executeUpdate();
+System.out.println("Status updated for candidate ID: " + selectedCandidateId);
 
-        // Execute the update
-        updatePs.executeUpdate();
-        System.out.println("Status updated for candidate ID: " + selectedCandidateId);
 
         // Now handle interview scheduling
         if (newStatus.equalsIgnoreCase("Select")) {
@@ -238,8 +238,9 @@ public class Employee {
             try {
                 job_seaker.posts(empId);  // Assume this method lists all jobs
                 System.out.println("Enter the serial number to update:");
+                
                 int sno = shortcut.changeformat(s.nextLine());  // Getting serial number
-        
+                 
                 // Display options for what the user wants to update
                 System.out.println("What do you want to update?");
                 System.out.println("1. Salary");

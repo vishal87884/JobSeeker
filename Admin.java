@@ -57,6 +57,7 @@ public void manageUser(){
     if(choice==1){
         System.out.println("1. Add new Employee");
         System.out.println("2. Add new Admin");
+        System.out.println("3. Back ");
         int tempselection = shortcut.changeformat(sc.nextLine());
 
         if(tempselection==1){
@@ -91,7 +92,8 @@ public void manageUser(){
                 System.out.println(e);
             }
             
-        }else{
+        }else if(tempselection==3){manageUser();}
+        else{
             System.out.println("Invalid selection ");
             manageUser();
         }
@@ -122,7 +124,7 @@ public int takeDetail(int id,String whom){
 
     
     String company_mail=name+".e"+id+"@jobportal.org";
-    company_mail.replace(" ", "");
+    company_mail=company_mail.replace(" ", "");
 
     try{
         pst=jdbc.con.prepareStatement("INSERT INTO `jobportal`.`details` (`id`, `name`, `mobile_no`, `gmail`, `mail`,`role`) VALUES (?,?,?,?,?,?)");

@@ -24,7 +24,6 @@ availablepost int ,
 summary varchar(45) ,
 location varchar(45) ,
  experience varchar(45),
- interview_Date date,
  createdBy int );
 ------------------------
 
@@ -73,6 +72,7 @@ create table jobportal.details(
 	name varchar(45),
     mobile_no bigint,
     gmail varchar(99),
-    mail varchar(99)
+    mail varchar(99),
+    role varchar(45)
 	);
     

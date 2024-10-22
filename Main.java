@@ -31,13 +31,29 @@ public class Main {
                     case 1:
                         System.out.println("Admin selected.");
                         // Call Admin class/methods
-                        job_seaker.posts();
+                        Admin admin=new Admin();
+                        admin.adminWork(22);
                         break;
                     case 2:
                         System.out.println("Employ selected.");
                         // Employee em = new Employee();
                         // em.mainWorkEmployee();
-                        Employee.employeeLogin();
+                        // Employee.employeeLogin();
+
+                        System.out.println("1 -> Sign Up");
+                        System.out.println("2 -> Sign In");
+                        System.out.println("3 -> Back");
+                        int selection = shortcut.changeformat(scanner.nextLine());
+                        if(selection==1){
+                            Admin.addEmployee();
+                        }else if(selection==2){
+                            Employee.employeeLogin();
+                        }else if(selection==3){
+                            
+                        }else{
+                            System.out.println("--------------------------");
+                            System.out.println("Invalid selection");
+                        }
 
                         break;
                     case 3:

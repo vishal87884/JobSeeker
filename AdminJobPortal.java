@@ -9,13 +9,7 @@ import java.util.regex.Matcher;
 
 public class AdminJobPortal {
 
-    
-    static Connection con ;
     public static void main(String[] args) {
-
-        jdbc.connection();
-        con=jdbc.con;
-        
         Scanner sc = new Scanner(System.in);
         
         boolean running = true;
@@ -97,18 +91,19 @@ public class AdminJobPortal {
 
      
    
-// private static boolean isEmailAlreadyExists(String email) {
-//     try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
-//          PreparedStatement pstmt = con.prepareStatement("SELECT COUNT(*) FROM Employeer_admin WHERE Employeer_email = ?")) {
-//         pstmt.setString(1, email);
-//         ResultSet rs = pstmt.executeQuery();
-//         rs.next();
-//         return rs.getInt(1) > 0;
-//     } catch (Exception e) {
-//         System.out.println(e);
-//         return false;
-//     }
-// }
+    private static boolean isEmailAlreadyExists(String email) {
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
+             PreparedStatement pstmt = con.prepareStatement("SELECT COUNT(*) FROM employeer_admin WHERE email = ?")) {
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            return rs.getInt(1) > 0;  // Returns true if email exists
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+    
 
  // Add this method to validate email
 public static boolean isValidEmail(String email) {
@@ -122,18 +117,19 @@ public static boolean isValidEmail(String email) {
 }
 
 
-// private static boolean isEmailAlreadyExists1(String email) {
-//     try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
-//          PreparedStatement pstmt = con.prepareStatement("SELECT COUNT(*) FROM Jobseeker_admin WHERE Jobseeker_email = ?")) {
-//         pstmt.setString(1, email);
-//         ResultSet rs = pstmt.executeQuery();
-//         rs.next();
-//         return rs.getInt(1) > 0;
-//     } catch (Exception e) {
-//         System.out.println(e);
-//         return false;
-//     }
-// }
+private static boolean isEmailAlreadyExists1(String email) {
+    try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
+         PreparedStatement pstmt = con.prepareStatement("SELECT COUNT(*) FROM jobseeker_admin WHERE Jobseeker_email = ?")) {
+        pstmt.setString(1, email);
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        return rs.getInt(1) > 0;  // Returns true if email exists
+    } catch (Exception e) {
+        System.out.println(e);
+        return false;
+    }
+}
+
 
 
     // Add a new user
@@ -157,17 +153,14 @@ public static boolean isValidEmail(String email) {
             return;
         }
 
-        // // Check if email already exists
-        // if (isEmailAlreadyExists(email)) {
-        //     System.out.println("Email already exists. Try a different one.");
-        //     return;
-        // }
-        
+        if (isEmailAlreadyExists(email)) {
+            System.out.println("Email already exists. Try a different one.");
+            return;
+        }
 
         try {
-            // Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
-            
-            String query = "INSERT INTO employeer_admin (employeer_name, Employeer_email) VALUES (?, ?)";
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
+            String query = "INSERT INTO employeer_admin (employeer_name, email) VALUES (?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
 
             pstmt.setString(1, name);
@@ -202,15 +195,15 @@ public static boolean isValidEmail(String email) {
                 return;
             }
     
-            // // Check if email already exists
-            // if (isEmailAlreadyExists(email)) {
-            //     System.out.println("Email already exists. Try a different one.");
-            //     return;
-            // }
+            // Check if Jobseeker email already exists
+        if (isEmailAlreadyExists1(email)) {
+            System.out.println("Email already exists. Try a different one.");
+            return;
+        }
             
     
             try {
-                // Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
+                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
                 String query = "INSERT INTO Jobseeker_admin (Jobseeker_name, Jobseeker_email) VALUES (?, ?)";
                 PreparedStatement pstmt = con.prepareStatement(query);
     
@@ -234,17 +227,59 @@ public static boolean isValidEmail(String email) {
 
     // View all users
     private static void viewAllUsers() {
+      
+      Scanner scanner = new Scanner(System.in);
+      System.out.println(" 1. View All Employeers : ");
+      System.out.println(" 2. View All Jobseekers : ");
+      System.out.println(" 3. View All users : ");
+      int choice = scanner.nextInt();
+
+      if(choice == 1)
+      {
         try {
-            // Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
-            String query = "SELECT * FROM user";
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
+            String query = "SELECT * FROM employeer_admin";
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
             List<User> users = new ArrayList<>();
             while (rs.next()) {
-                int id = rs.getInt("user_id");
-                String name = rs.getString("user_name");
-                String email = rs.getString("user_email");
+                int id = rs.getInt("employeer_id");
+                String name = rs.getString("employeer_name");
+                String email = rs.getString("email");
+                users.add(new User(id, name, email));
+            }
+
+            if (users.isEmpty()) {
+                System.out.println("No users available.");
+            } else {
+                for (User user : users) {
+                    System.out.println(user);
+                }
+            }
+  
+          
+            rs.close();
+            stmt.close();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    else if(choice ==2)
+    {
+        try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
+            String query = "SELECT * FROM  jobseeker_admin";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            List<User> users = new ArrayList<>();
+            while (rs.next()) {
+                int id = rs.getInt("Jobseeker_id");
+                String name = rs.getString("Jobseeker_name");
+                String email = rs.getString("Jobseeker_email");
                 users.add(new User(id, name, email));
             }
 
@@ -263,6 +298,67 @@ public static boolean isValidEmail(String email) {
             System.out.println(e);
         }
     }
+
+    else 
+    {
+
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+    
+        try {
+            // Establishing the connection
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
+    
+            // Executing query to select all users
+            String query = "SELECT employeer_admin.employeer_id AS id, employeer_admin.employeer_name AS name, employeer_admin.email AS email " +
+                   "FROM employeer_admin " +
+                   "UNION " +
+                   "SELECT jobseeker_admin.Jobseeker_id AS id, jobseeker_admin.Jobseeker_name AS name, jobseeker_admin.Jobseeker_email AS email " +
+                   "FROM jobseeker_admin";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(query);
+    
+            // Storing users in a list
+            List<User> users = new ArrayList<>();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                users.add(new User(id, name, email));
+            }
+    
+            // Checking if users list is empty
+            if (users.isEmpty()) {
+                System.out.println("No users available.");
+            } else {
+                for (User user : users) {
+                    System.out.println(user);
+                }
+            }
+    
+        } 
+        catch (SQLException e) 
+        {
+            System.out.println("Error occurred: " + e.getMessage());
+            e.printStackTrace();  // Prints detailed stack trace for debugging
+        } 
+        finally 
+        {
+            // Closing resources in finally block to ensure they close even if an exception occurs
+            try {
+                if (rs != null) rs.close();  // Closing ResultSet
+                if (stmt != null) stmt.close();  // Closing Statement
+                if (con != null) con.close();  // Closing Connection
+            } catch (SQLException e) {
+                e.printStackTrace();  // If any exception occurs during closing
+            }
+        }
+    }
+    }
+
+       
 
     // Delete a user
     private static void deleteUser(Scanner sc) {
@@ -293,35 +389,7 @@ public static boolean isValidEmail(String email) {
 
     // View all jobs
     private static void viewAllJobs() {
-        try {
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/job_portaldb1", "root", "R!y@@9575");
-            String query = "SELECT * FROM job";
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-
-            List<Job> jobs = new ArrayList<>();
-            while (rs.next()) {
-                int id = rs.getInt("job_id");
-                String title = rs.getString("job_title");
-                String description = rs.getString("job_description");
-                String company = rs.getString("job_company");
-                jobs.add(new Job(id, title, description, company));
-            }
-
-            if (jobs.isEmpty()) {
-                System.out.println("No jobs available.");
-            } else {
-                for (Job job : jobs) {
-                    System.out.println(job);
-                }
-            }
-
-            rs.close();
-            stmt.close();
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        // Logic for viewing all jobs
     }
 
     // Option 3: Generate Analytics Report

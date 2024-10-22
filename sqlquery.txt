@@ -15,6 +15,7 @@ date Date
 
 create table jobs(
 sno int ,
+company varchar(60),
 post varchar(255),
 salary varchar(255),
 timing varchar(255),
@@ -23,8 +24,7 @@ availablepost int ,
 summary varchar(45) ,
 location varchar(45) ,
  experience varchar(45),
- interview_Date Date
- );
+ createdBy int );
 ------------------------
 
 create table project(
@@ -64,3 +64,14 @@ create table application(
     job int ,
     status  varchar(45)
 );
+
+----------------------------
+
+create table jobportal.details(
+	id int ,
+	name varchar(45),
+    mobile_no bigint,
+    gmail varchar(99),
+    mail varchar(99)
+	);
+    

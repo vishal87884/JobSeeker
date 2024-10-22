@@ -1,4 +1,7 @@
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -6,6 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Random;
 import java.util.Scanner;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 // import com.mysql.cj.protocol.Resultset;
@@ -171,5 +175,28 @@ public class shortcut {
             return false;
         }
     }
+
+    
+    public static void updating(String columnName, String newValue, int seekerId , String taleName) {
+        // Validate column name to prevent SQL injection
+        // if (!isValidColumnName(columnName)) {
+        //     throw new IllegalArgumentException("Invalid column name: " + columnName);
+        // }
+
+        String sql = "UPDATE "+taleName+" SET " + columnName + " = ? WHERE id = ?";
+        
+        try (
+             PreparedStatement pstmt = jdbc.con.prepareStatement(sql)) {
+             
+            pstmt.setString(1, newValue);
+            pstmt.setInt(2, seekerId);
+            
+            int affectedRows = pstmt.executeUpdate();
+            System.out.println("Updated " + affectedRows + " record(s).");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+  
   
 }

@@ -21,9 +21,12 @@ public class job_seaker {
                 System.out.println("1 - UPLODE YOUR'S RESUME");
                 System.out.println("2 - APPLY FOR JOB'S");
                 boolean trackdata=shortcut.checkdataexist(id, "id", "application");
-
+                boolean isDataExists = shortcut.checkdataexist(id, "id", "seaker_data");
                 if(trackdata==true){
                     System.out.println("3 - Track Application");
+                }
+                if(isDataExists==true){
+                    System.out.println("4 - UPDATE YOUR INFORMATION / CHANGE YOUR INFORMATION");
                 }
                 System.out.println("5 - Logout");
                 // System.out.println("4 - TRACK APPLICATION");
@@ -45,9 +48,12 @@ public class job_seaker {
                     else if(choice==3 && trackdata==true){
                         //track application
                         trackApplication(id);
+                    }else if(choice==4 && isDataExists==true){
+                        System.out.println("This method is in working state ");
+                        // make update method and call from here 
                     }
                     else{
-                        System.out.println("Invalid choice. Please enter a number between 1 and 5.");
+                        System.out.println("Invalid choice. Please enter a valid choice");
                         seekerInfo(id);
                     }
         }
@@ -377,7 +383,7 @@ public class job_seaker {
        int select=shortcut.changeformat(selection);
 
         if(select==2){
-            int id = shortcut.generateradomnumber(4);
+            int id = shortcut.generateradomnumber(6);
             
             System.out.println("-------------------------------------");
             System.out.println(" CREATE PROFILE ");
@@ -514,4 +520,47 @@ public class job_seaker {
             System.out.println(e);
         }
     }
+
+    public static void updateYourSelf(int id){
+        System.out.println("What you want to update :-");
+        System.out.println("1 -> Name");
+        System.out.println("2 -> Mobile number");
+        System.out.println("3 -> Address");
+        System.out.println("4 -> Email Address");
+        System.out.println("5 -> Age");
+        System.out.println("6 -> Skill");
+        int updateSelection = shortcut.changeformat(sc.nextLine());
+
+        if(updateSelection==1){
+            System.out.print("Enter your Correct Name :- ");
+            String name = sc.nextLine();
+
+        }else if(updateSelection==2){
+            System.out.println("Enter your correct/new mobile number :- ");
+
+            Long newMobileNumber = shortcut.phonenumbertaking();
+            shortcut.updating("mobile_no", newMobileNumber.toString(), id, "job_seaker");
+
+            // shortcut.updating("mobile_no", shortcut.phonenumbertaking().toString(), id, null);
+
+        }else if(updateSelection==3){
+            System.out.println("Enter your correct/new Address :- ");
+            shortcut.updating("address", sc.nextLine(), id, "job_seaker");
+
+        }else if(updateSelection==4){
+            System.out.println("Enter your Email Address :- ");
+            String email = sc.nextLine();
+            shortcut.updating("email", email, id, "job_seaker");
+
+        }else if(updateSelection==5){
+            System.out.println("Enter your age ");
+            int age = shortcut.changeformat(sc.nextLine());
+            shortcut.updating("age", String.valueOf(age), id, "job_seaker");
+
+        }else if(updateSelection==6){
+           
+        }
+    }
+
+
 }

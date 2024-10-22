@@ -24,7 +24,7 @@ public class Main {
             System.out.print("Enter your choice: ");
 
             if (scanner.hasNextInt()) {
-                int choice = scanner.nextInt(); 
+                int choice = shortcut.changeformat(scanner.nextLine()) ;
                
 
                 switch (choice) {

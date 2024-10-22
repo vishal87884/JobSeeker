@@ -87,47 +87,50 @@ public class job_seaker {
                     }
         }
 
-    // shows posts names details
-    public static void posts() {
-
-        try {
-            // String query="select * from jobs"
-            st = jdbc.con.createStatement();
-            rs = st.executeQuery("select * from jobs");
-            // System.out.println(rs.next());
-            // String [] postsarray = new String[5];
-            if(!rs.isBeforeFirst()){
-                System.out.println("There is no job available at this time");
-                return;
-            }
+        public static void posts(int id) { 
+            try {
+                // Query to fetch jobs created by the specific employee
+                String query = "SELECT * FROM jobs WHERE createdBy = ?";
+                PreparedStatement pst = jdbc.con.prepareStatement(query);
+                pst.setInt(1, id); // Set the employee ID parameter
         
-            while (rs.next()==true) {
-               
-                System.out.println("_______________________________________________________________");
-                // System.out.printf("| %-60s|%n","-------------------------------------------------------------");
-                // System.out.printf("| %-60s |%n","Serial number -> "+rs.getString("sno"));
-                
-                System.out.printf("| %-4s |%-6s%-46s|%n",
-                                "ID - "+ rs.getString("sno"),"",rs.getString("company") );
-                System.out.printf("| %-60s |%n","  "+rs.getString("post"));
-                // System.out.printf("| %-60s |%n","Salary -> "+rs.getString("salary"));
-                System.out.printf("| %-60s |%n","  "+rs.getString("timing"));
-                System.out.printf("| %-60s |%n","  "+rs.getString("location"));
-                System.out.printf("| %-60s |%n","  "+rs.getDate("Date"));
-                // System.out.println("-------------------------------------------------------------");
-                System.out.printf("|%-60s|%n","______________________________________________________________");
-                System.out.println();
-            }
+                rs = pst.executeQuery();
         
-            // System.out.println(
-            //         "--------------------------------------------------------------------------------------------------------------------------------------------------------");
-
-        } catch (Exception e) {
-            System.out.println("error while receving");
-            System.out.println(e);
-            e.getStackTrace();
+                if (!rs.isBeforeFirst()) { // If no jobs found for the specific employee
+                    System.out.println("No jobs found for employee with ID: " + id);
+                    
+                    // Now fetch all jobs and display them
+                    String allJobsQuery = "SELECT * FROM jobs";
+                    st = jdbc.con.createStatement();
+                    rs = st.executeQuery(allJobsQuery);
+        
+                    if (!rs.isBeforeFirst()) {
+                        System.out.println("There are no jobs available at this time.");
+                        return;
+                    }
+        
+                    System.out.println("Showing all available jobs:");
+                }
+        
+                // Display the job details (either for the specific employee or all jobs)
+                while (rs.next()) {
+                    System.out.println("_______________________________________________________________");
+                    System.out.printf("| %-4s |%-6s%-46s|%n", 
+                                     "ID - " + rs.getString("sno"), "", rs.getString("company"));
+                    System.out.printf("| %-60s |%n", "  " + rs.getString("post"));
+                    System.out.printf("| %-60s |%n", "  " + rs.getString("timing"));
+                    System.out.printf("| %-60s |%n", "  " + rs.getString("location"));
+                    System.out.printf("| %-60s |%n", "  " + rs.getDate("Date"));
+                    System.out.printf("|%-60s|%n", "______________________________________________________________");
+                    System.out.println();
+                }
+        
+            } catch (Exception e) {
+                System.out.println("Error while receiving job postings.");
+                e.printStackTrace(); // Print stack trace for debugging
+            }
         }
-
+        
         // try {
         //     // String query="select * from jobs"
             // st = jdbc.con.createStatement();
@@ -160,7 +163,7 @@ public class job_seaker {
         //     System.out.println(e);
         //     e.getStackTrace();
         // }
-    }
+    
 
     // seaker works
     public static void seaker(int id) {
@@ -169,7 +172,7 @@ public class job_seaker {
 
         // call post method so all of post are shown
         
-        posts();
+        posts(0);
 
         System.out.println("ENTER SERIAL NUMBER FOR SELECT POST ");
         System.out.println("PRESS -1 FOR MAIN MENU");

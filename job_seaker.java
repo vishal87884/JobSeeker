@@ -26,7 +26,7 @@ public class job_seaker {
                     System.out.println("3 - Track Application");
                 }
                 if(isDataExists==true){
-                    System.out.println("4 - UPDATE YOUR INFORMATION / CHANGE YOUR INFORMATION");
+                    System.out.println("4 - View self data");
                 }
                 System.out.println("5 - Logout");
                 // System.out.println("4 - TRACK APPLICATION");
@@ -49,8 +49,37 @@ public class job_seaker {
                         //track application
                         trackApplication(id);
                     }else if(choice==4 && isDataExists==true){
-                        System.out.println("This method is in working state ");
+                        // System.out.println("This method is in working state ");
                         // make update method and call from here 
+                        try{
+                            String sql = "select * from seaker_data where id = "+id;
+                            st=jdbc.con.createStatement();
+                            rs=st.executeQuery(sql);
+
+                            while(rs.next()){
+                                System.out.println("-----------------------------------------------");
+                                System.out.println("Your id   -> "+rs.getString("id"));
+                                System.out.println("Name      -> "+rs.getString("name"));
+                                System.out.println("Mobile no -> "+rs.getString("mobile_no"));
+                                System.out.println("Mail      -> "+rs.getString("mail"));
+                                System.out.println("Age       -> "+rs.getString("age"));
+                                System.out.println("Skills    -> "+rs.getString("skills"));
+                                System.out.println("Address   -> "+rs.getString("address"));
+                                System.out.println("------------------------------------------------");
+
+                                System.out.println("1. Update");
+                                System.out.println("2. Back");
+                                int tempp=shortcut.changeformat(sc.nextLine());
+                                if(tempp==1){
+                                    updateYourSelf(id);
+                                }else{
+                                    seekerInfo(id);
+                                }
+                            }
+                            
+                        }catch(Exception e){
+                            System.out.println(e);
+                        }
                     }
                     else{
                         System.out.println("Invalid choice. Please enter a valid choice");
@@ -490,10 +519,10 @@ public class job_seaker {
             rs = st.executeQuery("select * from jobs where sno ="+sno);
 
             while (rs.next()){
-                System.out.println("Company -> "+ rs.getString("company"));
+                System.out.println("Company    -> "+ rs.getString("company"));
                 System.out.println("Job tittle -> "+ rs.getString("post"));
-                System.out.println("Timing -> "+rs.getString("timing"));
-                System.out.println("location -> "+rs.getString("location"));
+                System.out.println("Timing     -> "+rs.getString("timing"));
+                System.out.println("location   -> "+rs.getString("location"));
                 System.out.println("Available post -> "+rs.getString("availablepost"));
                 System.out.println("Experience -> "+rs.getString("experience"));
                 System.out.println("Experience -> "+rs.getDate("Date"));
@@ -511,8 +540,10 @@ public class job_seaker {
             rs=st.executeQuery(query);
 
             while(rs.next()){
+                System.out.println("--------------------------------------------------");
                 System.out.printf("| %-10s | %-20s | %-10s |%n",
                    rs.getString("j.company"), rs.getString("j.post"), rs.getString("a.status") );
+                   System.out.println("--------------------------------------------------");
             }
 
         }catch(Exception e){
@@ -534,31 +565,39 @@ public class job_seaker {
         if(updateSelection==1){
             System.out.print("Enter your Correct Name :- ");
             String name = sc.nextLine();
+            shortcut.updating("name", name, id, "seaker_data");
 
         }else if(updateSelection==2){
             System.out.println("Enter your correct/new mobile number :- ");
 
             Long newMobileNumber = shortcut.phonenumbertaking();
-            shortcut.updating("mobile_no", newMobileNumber.toString(), id, "job_seaker");
+            shortcut.updating("mobile_no", newMobileNumber.toString(), id, "seaker_data");
 
             // shortcut.updating("mobile_no", shortcut.phonenumbertaking().toString(), id, null);
 
         }else if(updateSelection==3){
             System.out.println("Enter your correct/new Address :- ");
-            shortcut.updating("address", sc.nextLine(), id, "job_seaker");
+            shortcut.updating("address", sc.nextLine(), id, "seaker_data");
 
         }else if(updateSelection==4){
             System.out.println("Enter your Email Address :- ");
             String email = sc.nextLine();
-            shortcut.updating("email", email, id, "job_seaker");
+            shortcut.updating("email", email, id, "seaker_data");
 
         }else if(updateSelection==5){
             System.out.println("Enter your age ");
             int age = shortcut.changeformat(sc.nextLine());
-            shortcut.updating("age", String.valueOf(age), id, "job_seaker");
+            shortcut.updating("age", String.valueOf(age), id, "seaker_data");
+
+
+            // shortcut.updating("age", String.valueOf(shortcut.changeformat(sc.nextLine())), id, "seaker_data");
+
 
         }else if(updateSelection==6){
            
+        }else{
+            System.out.println("Invalid selection");
+            updateYourSelf(id);
         }
     }
 

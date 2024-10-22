@@ -2,20 +2,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Scanner;
+import java.util.*;
+
 
 public class Employee {
    static Scanner s=new Scanner(System.in);
     Connection con=jdbc.con;
     PreparedStatement ps;
     static ResultSet rs;
-
+    static int empId;
     Employee(){
         System.out.println("Enter 1:- For Add Job \nEnter 2:- For Manage Job\nEnter 3:- For Remove Jobs \nEnter 4:-  For manageApplications");
         String n=s.nextLine();
         switch ((shortcut.changeformat(n))) {
                 case 1:
-                add();
+                add(empId);
                 break;
                 case 2:
                 manage();
@@ -23,7 +24,6 @@ public class Employee {
                 case 3:
                 remove();
                 break;
-                
                 case 4:
                 manageApplications();
                 break;
@@ -32,80 +32,136 @@ public class Employee {
                 break;
         }
     }
-    public void manageApplications() {
-        try {
-            job_seaker.posts();  // Display available job posts
-            System.out.println("Enter the Serial Number (sno) of the job to manage applications:");
-            int sno = shortcut.changeformat(s.nextLine());  // Get job serial number
-    
-            // Query to get candidate applications and personal details for the job
-            String query = "SELECT s.id, s.name, s.mobile_no, s.mail, s.age, s.skills, s.address, a.status " +
-                           "FROM seaker_data s " +
-                           "JOIN application a ON s.id = a.id " +
-                           "WHERE a.job = ?";
-    
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1, sno);  // Set the job serial number
-    
-            // Execute the query and get the result
-            ResultSet rs = ps.executeQuery();
-    
-            // Check if there are any applicants
-            if (!rs.isBeforeFirst()) {
-                System.out.println("No candidates have applied for this job.");
-                return;
-            }
-    
-            // Display candidate details and allow the user to update status
-            while (rs.next()) {
-                int candidateId = rs.getInt("id");
-                String name = rs.getString("name");
-                Long mobileNo = rs.getLong("mobile_no");
-                String email = rs.getString("mail");
-                int age = rs.getInt("age");
-                String skills = rs.getString("skills");
-                String address = rs.getString("address");
-                String currentStatus = rs.getString("status");
-    
-                // Display candidate's personal info
-                System.out.println("Candidate ID: " + candidateId);
-                System.out.println("Name: " + name);
-                System.out.println("Mobile No: " + mobileNo);
-                System.out.println("Email: " + email);
-                System.out.println("Age: " + age);
-                System.out.println("Skills: " + skills);
-                System.out.println("Address: " + address);
-                System.out.println("Current Status: " + currentStatus);
-                System.out.println("-------------------------------");
-    
-                // Ask for a new status
-                System.out.println("Enter new status for this candidate (Reject, Pending, Select):");
-                String newStatus = s.nextLine();
-    
-                // Validate input
-                if (!newStatus.equalsIgnoreCase("Reject") &&
-                    !newStatus.equalsIgnoreCase("Pending") &&
-                    !newStatus.equalsIgnoreCase("Select")) {
-                    System.out.println("Invalid status. Skipping candidate update.");
-                    continue;
-                }
-    
-                // Update the status for this candidate in the 'application' table
-                String updateQuery = "UPDATE application SET status = ? WHERE id = ? AND job = ?";
-                PreparedStatement updatePs = con.prepareStatement(updateQuery);
-                updatePs.setString(1, newStatus);
-                updatePs.setInt(2, candidateId);
-                updatePs.setInt(3, sno);
-    
-                // Execute the update
-                updatePs.executeUpdate();
-                System.out.println("Status updated for candidate: " + name);
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
+  public void manageApplications() {
+    try {
+        job_seaker.posts();  // Display available job posts
+        System.out.println("Enter the Serial Number (sno) of the job to manage applications:");
+        int sno = shortcut.changeformat(s.nextLine());  // Get job serial number
+
+        // Query to get candidate applications and personal details for the job
+        String query = "SELECT s.id, s.name, s.mobile_no, s.mail, s.age, s.skills, s.address, a.status " +
+                       "FROM seaker_data s " +
+                       "JOIN application a ON s.id = a.id " +
+                       "WHERE a.job = ?";
+
+        PreparedStatement ps = con.prepareStatement(query);
+        ps.setInt(1, sno);  // Set the job serial number
+
+        // Execute the query and get the result
+        ResultSet rs = ps.executeQuery();
+
+        // Check if there are any applicants
+        if (!rs.isBeforeFirst()) {
+            System.out.println("No candidates have applied for this job.");
+            return;
         }
+
+        // Display candidate details in a structured list
+        System.out.println("Candidates who have applied for this job:");
+        ArrayList<Integer> candidateIds = new ArrayList<>();
+        while (rs.next()) {
+            int candidateId = rs.getInt("id");
+            String name = rs.getString("name");
+            Long mobileNo = rs.getLong("mobile_no");
+            String email = rs.getString("mail");
+            int age = rs.getInt("age");
+            String skills = rs.getString("skills");
+            String address = rs.getString("address");
+            String currentStatus = rs.getString("status");
+
+            // Display candidate's personal info in a structured format
+            System.out.println("Candidate ID: " + candidateId);
+            System.out.println("Name: " + name);
+            System.out.println("Mobile No: " + mobileNo);
+            System.out.println("Email: " + email);
+            System.out.println("Age: " + age);
+            System.out.println("Skills: " + skills);
+            System.out.println("Address: " + address);
+            System.out.println("Current Status: " + currentStatus);
+            System.out.println("-------------------------------");
+
+            // Add candidateId to the list for further selection
+            candidateIds.add(candidateId);
+        }
+
+        // Ask the user to select a candidate for further actions
+        System.out.println("Enter the Candidate ID to update their application status or conduct an interview:");
+        int selectedCandidateId = Integer.parseInt(s.nextLine());
+
+        // Validate if the selected candidate ID is in the list
+        if (!candidateIds.contains(selectedCandidateId)) {
+            System.out.println("Invalid Candidate ID. Exiting...");
+            return;
+        }
+
+        // Ask for a new status for the selected candidate
+        System.out.println("Enter new status for this candidate (Reject, Pending, Select):");
+        String newStatus = s.nextLine();
+
+        // Validate input
+        if (!newStatus.equalsIgnoreCase("Reject") &&
+            !newStatus.equalsIgnoreCase("Pending") &&
+            !newStatus.equalsIgnoreCase("Select")) {
+            System.out.println("Invalid status. Operation aborted.");
+            return;
+        }
+
+        // Update the status for the selected candidate in the 'application' table
+        String updateQuery = "UPDATE application SET status = ? WHERE id = ? AND job = ?";
+        PreparedStatement updatePs = con.prepareStatement(updateQuery);
+        updatePs.setString(1, newStatus);
+        updatePs.setInt(2, selectedCandidateId);
+        updatePs.setInt(3, sno);
+
+        // Execute the update
+        updatePs.executeUpdate();
+        System.out.println("Status updated for candidate ID: " + selectedCandidateId);
+
+        // Now handle interview scheduling
+        if (newStatus.equalsIgnoreCase("Select")) {
+            // Get interview date from the 'jobs' table
+            String dateQuery = "SELECT interview_Date FROM jobs WHERE sno = ?";
+            PreparedStatement datePs = con.prepareStatement(dateQuery);
+            datePs.setInt(1, sno);
+            ResultSet dateRs = datePs.executeQuery();
+
+            if (dateRs.next()) {
+                java.sql.Date interviewDate = dateRs.getDate("interview_Date");
+                System.out.println("Interview Date: " + interviewDate);
+
+                // Check for existing interviews on this date
+                String timeSlotQuery = "SELECT COUNT(*) AS interview_count FROM application a " +
+                                       "JOIN jobs j ON a.job = j.sno " +
+                                       "WHERE j.interview_Date = ? AND a.status = 'Select'";
+                PreparedStatement timeSlotPs = con.prepareStatement(timeSlotQuery);
+                timeSlotPs.setDate(1, interviewDate);
+                ResultSet timeSlotRs = timeSlotPs.executeQuery();
+
+                int interviewCount = 0;
+                if (timeSlotRs.next()) {
+                    interviewCount = timeSlotRs.getInt("interview_count");
+                }
+
+                // Offer time slots based on the current count of interviews
+                if (interviewCount < 3) {
+                    System.out.println("Available Slot: 10:00 AM to 12:00 PM");
+                } else if (interviewCount < 6) {
+                    System.out.println("Available Slot: 1:00 PM to 3:00 PM");
+                } else if (interviewCount < 9) {
+                    System.out.println("Available Slot: 4:00 PM to 6:00 PM");
+                } else {
+                    // All slots filled, increase the date
+                    //interviewDate = new Date(interviewDate.getTime() + (1000 * 60 * 60 * 24)); // Next day
+                    System.out.println("All slots are filled for this date. Next available date: " + interviewDate);
+                }
+            }
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
+
     
     // private String timing() {
     //   System.out.print("Enter Time to :- ");
@@ -258,7 +314,7 @@ public class Employee {
             new Employee();
         }
         
-        public void add() {
+        public  void add(int employeeId) {  // Accept employee ID as a parameter
             try {
                 // Input job position name
                 System.out.println("Enter The Job Position Name");
@@ -295,8 +351,9 @@ public class Employee {
                 // Get the current date
                 java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
         
-                // SQL query to insert data including the company
-                String q = "INSERT INTO jobs (post, salary, timing, availablepost, Date, summary, location, experience, company) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                // SQL query to insert data including the company and createdBy (employee ID)
+                String q = "INSERT INTO jobs (post, salary, timing, availablepost, Date, summary, location, experience, company, createdBy) " +
+                           "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
                 // Prepare the statement
                 ps = con.prepareStatement(q);
@@ -311,6 +368,7 @@ public class Employee {
                 ps.setString(7, location);
                 ps.setString(8, experience);
                 ps.setString(9, company);
+                ps.setInt(10, employeeId);  // Set the employee ID in the createdBy column
         
                 // Execute the query
                 ps.executeUpdate();
@@ -320,39 +378,36 @@ public class Employee {
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
-            new Employee();
+            new Employee();  // Call to Employee class, if necessary
         }
         
+        // Timing method remains unchanged
+        public String timing() {
+            String defaultTime = "";
+            try {
+                System.out.println("Select The Time");
+                System.out.println("Enter 1 :- Full Time");
+                System.out.println("Enter 2 :- Part Time");
         
-        
-    public String timing() {
-      String defaultTime="";
-      try {
-        System.out.println("Select The Time");
-        System.out.println("Enter 1 :- Full Time");
-        System.out.println("Enter 2 :- Part Time");
-     
-        int num=shortcut.changeformat(s.nextLine());
-        switch (num) {
-            case 1:
-                
-                defaultTime="Full Time";
-                break;
-                case 2:               
-                defaultTime="Part Time";
-                break;
-                
-            default:
-            defaultTime="Part Time";
-                break;
+                int num = shortcut.changeformat(s.nextLine());
+                switch (num) {
+                    case 1:
+                        defaultTime = "Full Time";
+                        break;
+                    case 2:
+                        defaultTime = "Part Time";
+                        break;
+                    default:
+                        defaultTime = "Part Time";
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid Input...\nTry Again");
+                timing();
+            }
+            return defaultTime;
         }
-      } catch (Exception e) {
-        System.out.println("Invalid Input...\nTry Again");
-       timing();
-      } 
-      return defaultTime; 
-    }
-    
+        
 
     public static void employeeLogin(){
         System.out.print("Enter Login id -> ");
@@ -381,7 +436,7 @@ public class Employee {
                 System.out.println("------------------------------");
                 System.out.println("Logged in successfully");
                 System.out.println("------------------------------");
-
+                empId=tempId;
                // run 
                new Employee();
             }

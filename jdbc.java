@@ -8,7 +8,7 @@ public class jdbc {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
              con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jobportal", "root",
-                    "735403");
+                    "9589");
             System.out.println("---CONNECTED SERVER SECESSFULLY---");
         //    System.out.println(con);
         } catch (Exception e) {

@@ -34,15 +34,18 @@ public class Employee {
     }
   public void manageApplications() {
     try {
-        job_seaker.posts(empId);  // Display available job posts
+        employee_posts(empId);
+        // job_seaker.posts();  // Display available job posts
+
         System.out.println("Enter the Serial Number (sno) of the job to manage applications:");
         int sno = shortcut.changeformat(s.nextLine());  // Get job serial number
 
+        
         // Query to get candidate applications and personal details for the job
         String query = "SELECT s.id, s.name, s.mobile_no, s.mail, s.age, s.skills, s.address, a.status " +
                        "FROM seaker_data s " +
                        "JOIN application a ON s.id = a.id " +
-                       "WHERE a.job = ?";
+                       "WHERE a.job = ? ";
 
         PreparedStatement ps = con.prepareStatement(query);
         ps.setInt(1, sno);  // Set the job serial number
@@ -52,7 +55,9 @@ public class Employee {
 
         // Check if there are any applicants
         if (!rs.isBeforeFirst()) {
+            // System.out.println("----------------------------------------");
             System.out.println("No candidates have applied for this job.");
+            manageApplications();
             return;
         }
 
@@ -205,7 +210,7 @@ public class Employee {
     //        }
            public void remove() {
             try {
-                job_seaker.posts(empId);  // Display all jobs
+                job_seaker.posts();  // Display all jobs
                 System.out.println("Enter the Serial Number (sno) of the job to remove:");
                 int sno = shortcut.changeformat(s.nextLine());  // Getting serial number as input
         
@@ -236,7 +241,7 @@ public class Employee {
         
          public void manage() {
             try {
-                job_seaker.posts(empId);  // Assume this method lists all jobs
+                job_seaker.posts();  // Assume this method lists all jobs
                 System.out.println("Enter the serial number to update:");
                 int sno = shortcut.changeformat(s.nextLine());  // Getting serial number
         
@@ -449,6 +454,47 @@ public class Employee {
         }catch (Exception exception) {
             System.out.println(exception);
             System.out.println("PROBLEM IN CHECKING DETAILS");
+        }
+    }
+
+    public static void employee_posts(int jId) {
+
+        try {
+            // String query="select * from jobs"
+            Statement st = jdbc.con.createStatement();
+            rs = st.executeQuery("select * from jobs where sno = "+jId);
+            // System.out.println(rs.next());
+            // String [] postsarray = new String[5];
+            if(!rs.isBeforeFirst()){
+                System.out.println("There is no job available at this time");
+                return;
+            }
+        
+            while (rs.next()==true) {
+               
+                System.out.println("_______________________________________________________________");
+                // System.out.printf("| %-60s|%n","-------------------------------------------------------------");
+                // System.out.printf("| %-60s |%n","Serial number -> "+rs.getString("sno"));
+                
+                System.out.printf("| %-4s |%-6s%-46s|%n",
+                                "ID - "+ rs.getString("sno"),"",rs.getString("company") );
+                System.out.printf("| %-60s |%n","  "+rs.getString("post"));
+                // System.out.printf("| %-60s |%n","Salary -> "+rs.getString("salary"));
+                System.out.printf("| %-60s |%n","  "+rs.getString("timing"));
+                System.out.printf("| %-60s |%n","  "+rs.getString("location"));
+                System.out.printf("| %-60s |%n","  "+rs.getDate("Date"));
+                // System.out.println("-------------------------------------------------------------");
+                System.out.printf("|%-60s|%n","______________________________________________________________");
+                System.out.println();
+            }
+        
+            // System.out.println(
+            //         "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+        } catch (Exception e) {
+            System.out.println("error while receving");
+            System.out.println(e);
+            e.getStackTrace();
         }
     }
 

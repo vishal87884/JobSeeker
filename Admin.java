@@ -1,4 +1,6 @@
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Scanner;
 
 public class Admin {
@@ -47,7 +49,7 @@ public void generateAnalyticReport(){
 public void manageUser(){
     System.out.println("\nManage User Accounts:");
     System.out.println("1. Add User");
-    System.out.println("2. Delete User");
+    // System.out.println("2. Delete User");
     System.out.println("3. View All Users");
     System.out.println("4. View All Jobs");
     System.out.println("5. Back to Main Menu");
@@ -97,10 +99,12 @@ public void manageUser(){
             System.out.println("Invalid selection ");
             manageUser();
         }
-    }else if(choice==2){
-
-    }else if(choice==3){
-
+    // }else if(choice==2){
+        
+    }
+    else if(choice==3){
+       viewJobseaker();System.out.println("---------------------------------------------------------------------------------");
+       viewEmployee();
     }else if(choice==4){
 
     }else if(choice==5){
@@ -178,6 +182,98 @@ public static void addEmployee(){
         System.out.println(e);
     }
     
+}
+
+public static void viewJobseaker(){
+    try{
+        // String sql = "select * from seaker_data";
+        // Statement st=jdbc.con.createStatement();
+        // ResultSet rs = st.executeQuery(sql);
+        // while (rs.next()==true) {
+           
+        //     System.out.println("_______________________________________________________________");
+        //     // System.out.printf("| %-60s|%n","-------------------------------------------------------------");
+        //     // System.out.printf("| %-60s |%n","Serial number -> "+rs.getString("sno"));
+            
+        //     System.out.printf("| %-60s|%n",
+        //                     "ID - "+ rs.getString("Id"));
+        //     System.out.printf("| %-60s |%n","Name ->  "+rs.getString("name"));
+        //     // System.out.printf("| %-60s |%n","Salary -> "+rs.getString("salary"));
+        //     System.out.printf("| %-60s |%n","Mobile no. -> "+rs.getString("mobile_no"));
+        //     System.out.printf("| %-60s |%n","Mail -> "+rs.getString("mail"));
+        //     System.out.printf("| %-60s |%n","Age ->  "+rs.getString("age"));
+        //     System.out.printf("| %-60s |%n","Skills ->  "+rs.getString("skills"));
+        //     System.out.printf("| %-60s |%n","Address ->  "+rs.getString("address"));
+        //     System.out.printf("| %-60s |%n","Experiened ->  "+rs.getString("experienced"));
+        //     System.out.printf("| %-60s |%n","Work in Project ->  "+rs.getString("project"));
+        //     System.out.printf("| %-60s |%n","Registration date ->  "+rs.getDate("date"));
+
+          
+        //     // System.out.println("-------------------------------------------------------------");
+        //     System.out.printf("|%-60s|%n","______________________________________________________________");
+        //     System.out.println();
+    // }
+
+        System.out.println("-----------------");
+
+       
+        // String query="select * from jobs"
+        Statement st = jdbc.con.createStatement();
+        ResultSet rs = st.executeQuery("select * from seaker_data s");
+
+        System.out.println(
+                "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("| %-8s | %-18s | %-10s | %-25s | %-25s | %-10s | %-6s | %-7s |%n",
+                "ID", "Name", "Mobile No.", "Mail", "Skills","Registerd","Exp","Project");
+
+        System.out.println(
+                "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+        while (rs.next()) {
+
+            System.out.printf("| %-8s | %-18s | %-10s | %-25s | %-25s | %-10s | %-6s | %-7s |%n",
+            rs.getInt("id"),  rs.getString("name"),  rs.getString("mobile_no"),  rs.getString("mail"), rs.getString("skills"),rs.getDate("date")
+            ,rs.getString("experienced"),rs.getString("Project"));
+
+        }
+        System.out.println(
+                "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+
+        System.out.println("");
+
+    }catch(Exception e){
+        System.out.println(e);
+    }
+}
+
+public static void viewEmployee(){
+    try{
+        Statement st=jdbc.con.createStatement();
+        ResultSet rs=st.executeQuery("Select * from details");
+
+        System.out.println(
+                "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("| %-8s | %-18s | %-10s | %-30s | %-30s |%n",
+                "ID", "Name", "Mobile No.", "Gmail", "Mail");
+
+        System.out.println(
+                "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+        while (rs.next()) {
+
+            System.out.printf("| %-8s | %-18s | %-10s | %-30s | %-30s |%n",
+            rs.getInt("id"),  rs.getString("name"),  rs.getString("mobile_no"),  rs.getString("gmail"), rs.getString("mail"));
+
+        }
+        System.out.println(
+                "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+
+    
+    }catch(Exception e){
+        System.out.println(e);
+    }
 }
 
 }

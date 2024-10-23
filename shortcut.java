@@ -190,9 +190,9 @@ public class shortcut {
              
             pstmt.setString(1, newValue);
             pstmt.setInt(2, seekerId);
-            
-            int affectedRows = pstmt.executeUpdate();
-            System.out.println("Updated " + affectedRows + " record(s).");
+            pstmt.executeUpdate();
+            // System.out.println("Updated " + affectedRows + " record(s).");
+                System.out.println("Updated successfully");
         } catch (SQLException e) {
             e.printStackTrace();
         }

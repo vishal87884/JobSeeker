@@ -24,7 +24,6 @@ availablepost int ,
 summary varchar(45) ,
 location varchar(45) ,
  experience varchar(45),
- interview_Date date,
  createdBy int );
 ------------------------
 

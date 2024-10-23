@@ -34,7 +34,7 @@ public class Employee {
     }
   public void manageApplications() {
     try {
-        job_seaker.posts(empId);  // Display available job posts
+        job_seaker.posts();  // Display available job posts
         System.out.println("Enter the Serial Number (sno) of the job to manage applications:");
         int sno = shortcut.changeformat(s.nextLine());  // Get job serial number
 
@@ -205,7 +205,7 @@ System.out.println("Status updated for candidate ID: " + selectedCandidateId);
     //        }
            public void remove() {
             try {
-                job_seaker.posts(empId);  // Display all jobs
+                job_seaker.posts();  // Display all jobs
                 System.out.println("Enter the Serial Number (sno) of the job to remove:");
                 int sno = shortcut.changeformat(s.nextLine());  // Getting serial number as input
         
@@ -236,7 +236,7 @@ System.out.println("Status updated for candidate ID: " + selectedCandidateId);
         
          public void manage() {
             try {
-                job_seaker.posts(empId);  // Assume this method lists all jobs
+                job_seaker.posts();  // Assume this method lists all jobs
                 System.out.println("Enter the serial number to update:");
                 
                 int sno = shortcut.changeformat(s.nextLine());  // Getting serial number

@@ -36,6 +36,11 @@ public class job_seaker {
 
                     if(choice==1){
                         // System.out.println("UPLODE YOUR'S RESUME.");
+                        // seekerInfo(id);
+                        // ResumeUtils.uploadResume(id);
+                        // ResumeUtils.Resumetaking(id);
+                        jj(id);
+
                         seekerInfo(id);
                     }
                     else if(choice==2){
@@ -48,6 +53,7 @@ public class job_seaker {
                     else if(choice==3 && trackdata==true){
                         //track application
                         trackApplication(id);
+                        seekerInfo(id);
                     }else if(choice==4 && isDataExists==true){
                         // System.out.println("This method is in working state ");
                         // make update method and call from here 
@@ -87,50 +93,47 @@ public class job_seaker {
                     }
         }
 
-        public static void posts(int id) { 
-            try {
-                // Query to fetch jobs created by the specific employee
-                String query = "SELECT * FROM jobs WHERE createdBy = ?";
-                PreparedStatement pst = jdbc.con.prepareStatement(query);
-                pst.setInt(1, id); // Set the employee ID parameter
-        
-                rs = pst.executeQuery();
-        
-                if (!rs.isBeforeFirst()) { // If no jobs found for the specific employee
-                    System.out.println("No jobs found for employee with ID: " + id);
-                    
-                    // Now fetch all jobs and display them
-                    String allJobsQuery = "SELECT * FROM jobs";
-                    st = jdbc.con.createStatement();
-                    rs = st.executeQuery(allJobsQuery);
-        
-                    if (!rs.isBeforeFirst()) {
-                        System.out.println("There are no jobs available at this time.");
-                        return;
-                    }
-        
-                    System.out.println("Showing all available jobs:");
-                }
-        
-                // Display the job details (either for the specific employee or all jobs)
-                while (rs.next()) {
-                    System.out.println("_______________________________________________________________");
-                    System.out.printf("| %-4s |%-6s%-46s|%n", 
-                                     "ID - " + rs.getString("sno"), "", rs.getString("company"));
-                    System.out.printf("| %-60s |%n", "  " + rs.getString("post"));
-                    System.out.printf("| %-60s |%n", "  " + rs.getString("timing"));
-                    System.out.printf("| %-60s |%n", "  " + rs.getString("location"));
-                    System.out.printf("| %-60s |%n", "  " + rs.getDate("Date"));
-                    System.out.printf("|%-60s|%n", "______________________________________________________________");
-                    System.out.println();
-                }
-        
-            } catch (Exception e) {
-                System.out.println("Error while receiving job postings.");
-                e.printStackTrace(); // Print stack trace for debugging
+    // shows posts names details
+    public static void posts() {
+
+        try {
+            // String query="select * from jobs"
+            st = jdbc.con.createStatement();
+            rs = st.executeQuery("select * from jobs");
+            // System.out.println(rs.next());
+            // String [] postsarray = new String[5];
+            if(!rs.isBeforeFirst()){
+                System.out.println("There is no job available at this time");
+                return;
             }
-        }
         
+            while (rs.next()==true) {
+               
+                System.out.println("_______________________________________________________________");
+                // System.out.printf("| %-60s|%n","-------------------------------------------------------------");
+                // System.out.printf("| %-60s |%n","Serial number -> "+rs.getString("sno"));
+                
+                System.out.printf("| %-4s |%-6s%-46s|%n",
+                                "ID - "+ rs.getString("sno"),"",rs.getString("company") );
+                System.out.printf("| %-60s |%n","  "+rs.getString("post"));
+                // System.out.printf("| %-60s |%n","Salary -> "+rs.getString("salary"));
+                System.out.printf("| %-60s |%n","  "+rs.getString("timing"));
+                System.out.printf("| %-60s |%n","  "+rs.getString("location"));
+                System.out.printf("| %-60s |%n","  "+rs.getDate("Date"));
+                // System.out.println("-------------------------------------------------------------");
+                System.out.printf("|%-60s|%n","______________________________________________________________");
+                System.out.println();
+            }
+        
+            // System.out.println(
+            //         "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+        } catch (Exception e) {
+            System.out.println("error while receving");
+            System.out.println(e);
+            e.getStackTrace();
+        }
+
         // try {
         //     // String query="select * from jobs"
             // st = jdbc.con.createStatement();
@@ -163,7 +166,7 @@ public class job_seaker {
         //     System.out.println(e);
         //     e.getStackTrace();
         // }
-    
+    }
 
     // seaker works
     public static void seaker(int id) {
@@ -172,7 +175,7 @@ public class job_seaker {
 
         // call post method so all of post are shown
         
-        posts(0);
+        posts();
 
         System.out.println("ENTER SERIAL NUMBER FOR SELECT POST ");
         System.out.println("PRESS -1 FOR MAIN MENU");
@@ -216,6 +219,7 @@ public class job_seaker {
                         int result = pst.executeUpdate();
                         if(result==1){
                             System.out.println("Applied succefully");
+                            seekerInfo(id);
                         }else{
                             System.out.println("Unable to apply");
                         }
@@ -491,7 +495,7 @@ public class job_seaker {
                     System.out.println("------------------------------");
 
                     // change method their not seaker info , direct track application
-                    job_seaker.seekerInfo(id);
+                    seekerInfo(id);
                 }
                 else{
                    System.out.println("error");
@@ -563,7 +567,9 @@ public class job_seaker {
         System.out.println("4 -> Email Address");
         System.out.println("5 -> Age");
         System.out.println("6 -> Skill");
+        System.out.println("7 -> Back ");
         int updateSelection = shortcut.changeformat(sc.nextLine());
+        System.out.println("--------------------------------------");
 
         if(updateSelection==1){
             System.out.print("Enter your Correct Name :- ");
@@ -598,11 +604,18 @@ public class job_seaker {
 
         }else if(updateSelection==6){
            
-        }else{
+        }
+        else if(updateSelection==7){
+            seekerInfo(id);
+        }
+        else{
             System.out.println("Invalid selection");
             updateYourSelf(id);
         }
     }
-
+    public static void jj(int id ){
+        ResumeUtils rt=new ResumeUtils( id);
+                        // rt.uploadResume(id);
+    }
 
 }

@@ -1,8 +1,11 @@
+
 import java.sql.Statement;
 import java.time.YearMonth;
 import java.util.Scanner;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+
 // import java.sql.Date;
 
 
@@ -12,6 +15,7 @@ public class job_seaker {
         static Statement st;
         static Scanner sc = new Scanner(System.in);
         static PreparedStatement pst;
+       
 
         // Seeker personal details3
     public static void seekerInfo(int id){
@@ -34,10 +38,12 @@ public class job_seaker {
                 System.out.print("Enter your choice: ");
                 int choice = shortcut.changeformat(sc.nextLine());
 
+                
                     if(choice==1){
-                        // System.out.println("UPLODE YOUR'S RESUME.");
+                        System.out.println("UPLODE YOUR");
                         // seekerInfo(id);
-                        ResumeUtils.uploadResume(id);
+                        System.out.println("01");
+
                         seekerInfo(id);
                     }
                     else if(choice==2){
@@ -557,6 +563,8 @@ public class job_seaker {
     }
 
     public static void updateYourSelf(int id){
+        // int tempNum =0;
+        while(true){
         System.out.println("What you want to update :-");
         System.out.println("1 -> Name");
         System.out.println("2 -> Mobile number");
@@ -572,7 +580,7 @@ public class job_seaker {
             System.out.print("Enter your Correct Name :- ");
             String name = sc.nextLine();
             shortcut.updating("name", name, id, "seaker_data");
-
+            
         }else if(updateSelection==2){
             System.out.println("Enter your correct/new mobile number :- ");
 
@@ -584,11 +592,13 @@ public class job_seaker {
         }else if(updateSelection==3){
             System.out.println("Enter your correct/new Address :- ");
             shortcut.updating("address", sc.nextLine(), id, "seaker_data");
+            
 
         }else if(updateSelection==4){
             System.out.println("Enter your Email Address :- ");
             String email = sc.nextLine();
-            shortcut.updating("email", email, id, "seaker_data");
+            email=email.replace(" ", "");
+            shortcut.updating("mail", email, id, "seaker_data");
 
         }else if(updateSelection==5){
             System.out.println("Enter your age ");
@@ -600,15 +610,22 @@ public class job_seaker {
 
 
         }else if(updateSelection==6){
-           
+           System.out.println("You have to re enter all your skills");
+           System.out.println("Enter your skills :- ");
+        //    String st=sc.nextLine();
+           shortcut.updating("skills", sc.nextLine(), id, "seaker_data");
         }
         else if(updateSelection==7){
             seekerInfo(id);
+            // tempNum++;
+            // continue;
+            return;
         }
         else{
             System.out.println("Invalid selection");
-            updateYourSelf(id);
-        }
+            // updateYourSelf(id);
+        }}
+        
     }
 
 

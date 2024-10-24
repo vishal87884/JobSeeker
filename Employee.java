@@ -40,7 +40,7 @@ public class Employee {
             int sno = shortcut.changeformat(s.nextLine());  // Get job serial number
     
             // Query to get candidate applications and personal details for the job
-            String query = "SELECT s.id, s.name, s.mobile_no, s.mail, s.age, s.skills, s.address, a.status, a.Date " +
+            String query = "SELECT s.id, s.name, s.mobile_no, s.mail, s.age, s.skills, s.address, a.status, a.Date,a.slot " +
                            "FROM seaker_data s " +
                            "JOIN application a ON s.id = a.id " +
                            "WHERE a.job = ?";
@@ -62,8 +62,8 @@ public class Employee {
                     ArrayList<Integer> candidateIds = new ArrayList<>();
                     System.out.println(
                         "--------------------------------------------------------------------------------------------------------------------------------------------------------");
-                    System.out.printf("| %-13s | %-10s | %-10s | %-20s | %-7s | %-7s | %-6s | %-12s | %-10s |%n",
-                        "Candidate ID", "Name", "Mobile No.", "Email", "Age", "Skills", "Address", "Current Status", "Date");
+                    System.out.printf("| %-13s | %-10s | %-10s | %-20s | %-7s | %-7s | %-6s | %-12s | %-10s|%-10s |%n",
+                        "Candidate ID", "Name", "Mobile No.", "Email", "Age", "Skills", "Address", "Current Status", "Date","Slot");
                     System.out.println(
                         "--------------------------------------------------------------------------------------------------------------------------------------------------------");
     
@@ -77,9 +77,10 @@ public class Employee {
                         String address = rs.getString("address");
                         String currentStatus = rs.getString("status");
                         Date interviewDate = rs.getDate("Date");
+                        String slot=rs.getString("slot");
     
-                        System.err.printf("| %-13s | %-10s | %-10s | %-20s | %-7s | %-7s | %-6s | %-12s | %-10s |%n",
-                            candidateId, name, mobileNo, email, age, skills, address, currentStatus, interviewDate);
+                        System.err.printf("| %-13s | %-10s | %-10s | %-20s | %-7s | %-7s | %-6s | %-12s | %-10s|%-10s |%n",
+                            candidateId, name, mobileNo, email, age, skills, address, currentStatus, interviewDate,slot);
                         System.out.println(
                             "--------------------------------------------------------------------------------------------------------------------------------------------------------");
     
@@ -130,47 +131,50 @@ public class Employee {
                                 if (dateRs.next()) {
                                     java.sql.Date interviewDate = dateRs.getDate("interview_Date");
                                     System.out.println("Initial Interview Date: " + interviewDate);
-    
+                    
                                     String availableSlot = "";
                                     boolean slotFound = false;
-    
+                                    int slotCount = 0; // To track how many slots have been checked for the current date
+                    
                                     while (!slotFound) {
+                                        // Check how many candidates are already scheduled in the current date and time slot
                                         String timeSlotQuery = "SELECT COUNT(*) AS interview_count FROM application a " +
                                                                "JOIN jobs j ON a.job = j.sno " +
-                                                               "WHERE j.interview_Date = ? AND a.status = 'Select'";
-                                        try (PreparedStatement timeSlotPs = con.prepareStatement(timeSlotQuery)) {
-                                            timeSlotPs.setDate(1, interviewDate);
-                                            try (ResultSet timeSlotRs = timeSlotPs.executeQuery()) {
-                                                int interviewCount = 0;
-                                                if (timeSlotRs.next()) {
-                                                    interviewCount = timeSlotRs.getInt("interview_count");
-                                                }
-    
-                                                // Offer time slots based on the current count of interviews
-                                                if (interviewCount < 3) {
-                                                    availableSlot = "10:00 AM to 12:00 PM";
-                                                    System.out.println("Available Slot: " + availableSlot);
-                                                    slotFound = true;
-                                                } else if (interviewCount < 6) {
-                                                    availableSlot = "1:00 PM to 3:00 PM";
-                                                    System.out.println("Available Slot: " + availableSlot);
-                                                    slotFound = true;
-                                                } else if (interviewCount < 9) {
-                                                    availableSlot = "4:00 PM to 6:00 PM";
-                                                    System.out.println("Available Slot: " + availableSlot);
-                                                    slotFound = true;
-                                                } else {
-                                                    // All slots filled for this date, move to the next date
-                                                    Calendar cal = Calendar.getInstance();
-                                                    cal.setTime(interviewDate);
-                                                    cal.add(Calendar.DATE, 1);
-                                                    interviewDate = new java.sql.Date(cal.getTimeInMillis());
-                                                    System.out.println("All slots are filled for " + interviewDate + ". Checking the next available date.");
+                                                               "WHERE j.interview_Date = ? AND a.slot = ? AND a.status = 'Select'";
+                    
+                                        String[] timeSlots = {"10:00 AM to 12:00 PM", "1:00 PM to 3:00 PM", "4:00 PM to 6:00 PM"};
+                                        if (slotCount >= timeSlots.length) {
+                                            // All slots filled for this date, move to the next date
+                                            Calendar cal = Calendar.getInstance();
+                                            cal.setTime(interviewDate);
+                                            cal.add(Calendar.DATE, 1);
+                                            interviewDate = new java.sql.Date(cal.getTimeInMillis());
+                                            slotCount = 0; // Reset slot count for the new date
+                                            System.out.println("All slots are filled for " + interviewDate + ". Checking the next available date.");
+                                        } else {
+                                            availableSlot = timeSlots[slotCount];
+                                            try (PreparedStatement timeSlotPs = con.prepareStatement(timeSlotQuery)) {
+                                                timeSlotPs.setDate(1, interviewDate);
+                                                timeSlotPs.setString(2, availableSlot);
+                                                try (ResultSet timeSlotRs = timeSlotPs.executeQuery()) {
+                                                    int interviewCount = 0;
+                                                    if (timeSlotRs.next()) {
+                                                        interviewCount = timeSlotRs.getInt("interview_count");
+                                                    }
+                    
+                                                    // If no candidate has taken the current slot, it's available
+                                                    if (interviewCount == 0) {
+                                                        System.out.println("Available Slot: " + availableSlot);
+                                                        slotFound = true;
+                                                    } else {
+                                                        // If the slot is taken, move to the next slot
+                                                        slotCount++;
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-    
+                    
                                     // Insert interview date and slot into the application table
                                     String q = "UPDATE application SET Date = ?, slot = ? WHERE id = ?";
                                     try (PreparedStatement q2 = con.prepareStatement(q)) {
@@ -184,6 +188,7 @@ public class Employee {
                             }
                         }
                     }
+                    
                 }
             }
         } catch (Exception e) {

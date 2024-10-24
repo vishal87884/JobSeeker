@@ -67,7 +67,12 @@ public void manageUser(){
         }else if(tempselection==2){
             int id= shortcut.generateradomnumber(4);
             System.out.println("Your id is -> "+id);
-            takeDetail(id,"admin");
+            int checking = takeDetail(id,"admin");
+            if(checking==999){
+                return;
+            }else if(checking==0){
+                System.out.println("Something went wrong");
+            }else{
             System.out.print("Create password -> ");
             String password = sc.nextLine();
 
@@ -93,7 +98,7 @@ public void manageUser(){
             }catch(Exception e){
                 System.out.println(e);
             }
-            
+        }
         }else if(tempselection==3){manageUser();}
         else{
             System.out.println("Invalid selection ");
@@ -103,8 +108,18 @@ public void manageUser(){
         
     }
     else if(choice==3){
-       viewJobseaker();System.out.println("---------------------------------------------------------------------------------");
-       viewEmployee();
+    //    viewJobseaker();System.out.println("---------------------------------------------------------------------------------");
+    //    viewEmployee();
+        System.out.println("1. View employee data");
+        System.out.println("2. View Job Seeker Data");
+        int tempselection=shortcut.changeformat(sc.nextLine());
+
+        if(tempselection==1){
+            viewEmployee();
+            
+        }else if(tempselection==2){
+            viewJobseaker();
+        }
     }else if(choice==4){
 
     }else if(choice==5){
@@ -120,8 +135,11 @@ public int takeDetail(int id,String whom){
     System.out.println("Enter your name -> ");
     String name = sc.nextLine();
 
-    System.out.println("Enter your personal mail id -> ");
-    String gmail=sc.nextLine();
+    // System.out.println("Enter your personal mail id -> ");
+    String gmail=shortcut.validMailTaking();
+    if("Cancel form"==gmail){
+        return 999;
+    }
 
     System.out.println("Enter your Mobile number -> ");
     long phonenumber=shortcut.phonenumbertaking();
@@ -153,7 +171,12 @@ public static void addEmployee(){
 
     int id= shortcut.generateradomnumber(5);
     System.out.println("Your id is -> "+id);
-    admin.takeDetail(id,"employee");
+    int lp = admin.takeDetail(id,"employee");
+    if(lp==999){
+        return;
+    }else if(lp==0){
+        System.out.println("Somethings went wrong ");
+    }else
     System.out.print("Create password -> ");
     String password = sc.nextLine();
 
@@ -181,8 +204,9 @@ public static void addEmployee(){
     }catch(Exception e){
         System.out.println(e);
     }
-    
 }
+    
+
 
 public static void viewJobseaker(){
     try{

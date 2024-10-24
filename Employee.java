@@ -478,7 +478,9 @@ public class Employee {
         }
         
 
-    public static void employeeLogin(){
+   public static void employeeLogin(){
+        while (true) {
+  
         System.out.print("Enter Login id -> ");
         int tempId = shortcut.changeformat(s.nextLine());
 
@@ -500,7 +502,7 @@ public class Employee {
                System.out.println("Your id and password is not found");
                System.out.println("may be your password is incorrect");
                System.out.println("or your id does'nt exist");
-              employeeLogin();
+            //   employeeLogin();
             }else if(tempnum2==1){
                 System.out.println("------------------------------");
                 System.out.println("Logged in successfully");
@@ -508,6 +510,7 @@ public class Employee {
                 empId=tempId;
                // run 
                new Employee();
+               return;
             }
             else{
                System.out.println("error");
@@ -519,7 +522,18 @@ public class Employee {
             System.out.println(exception);
             System.out.println("PROBLEM IN CHECKING DETAILS");
         }
+
+        System.out.println("1. Re try");
+        System.out.println("2. Back");
+        int tempselection=shortcut.changeformat(s.nextLine());
+        if(tempselection==1){
+
+        }else{
+            return;
+        }
     }
+    }
+
 
     public static void employee_posts(int empId) {  // Pass the empId as an argument
 

@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -196,6 +197,35 @@ public class shortcut {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String validMailTaking(){
+        String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+        String condition1=".org";
+        String condition2=".com";
+
+       while (true) {
+        System.out.println("Enter Valid Mail Id :- ");
+        String email = scanner.nextLine();
+        boolean isCorrect = EMAIL_PATTERN.matcher(email).matches();
+
+        if((isCorrect==true) && (email.endsWith(condition2) || email.endsWith(condition1)) ){
+                return email;
+        }else{
+            System.out.println("You entered email is invalid");
+            System.out.println("1. Re - try");
+            System.out.println("2. Cancel form");
+            int tempselection=shortcut.changeformat(scanner.nextLine());
+
+            if(tempselection==1){
+
+            }else{
+                return "Cancel form";
+            }
+        }
+       }
+
     }
   
   

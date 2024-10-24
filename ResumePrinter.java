@@ -18,7 +18,7 @@ public class ResumePrinter {
         
         String URL = "jdbc:mysql://localhost:3306/jobportal?useSSL=false";
         String username = "root"; 
-        String password = "735403"; 
+        String password = "9538"; 
 
         try (Connection connection = DriverManager.getConnection(URL, username, password)) {
             printResumeToConsole(connection, email); 

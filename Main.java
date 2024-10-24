@@ -8,13 +8,13 @@ public class Main {
     static String password="";
 
     public static void main(String[] args) {
-
+          
         startHook();
         // System.out.println(jdbc.con);
         Scanner scanner = new Scanner(System.in);
-        
+       
         while (true) {
-            System.out.println("-------------------------------------");
+            System.out.println("---------------------------------- ---");
             System.out.println("1 - Admin");
             System.out.println("2 - Employ");
             System.out.println("3 - Job Seeker");

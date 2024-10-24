@@ -23,6 +23,7 @@ public class job_seaker {
            
 
                 System.out.println("1 - UPLODE YOUR'S RESUME");
+              
                 System.out.println("2 - APPLY FOR JOB'S");
                 boolean trackdata=shortcut.checkdataexist(id, "id", "application");
                 boolean isDataExists = shortcut.checkdataexist(id, "id", "seaker_data");
@@ -553,15 +554,17 @@ public class job_seaker {
 
     public static void trackApplication(int id){
         try{
-            String query = "select j.company,j.post,a.status from application a join jobs j on j.sno = a.job where a.id = "+id  ;
+            String query = "select j.company,j.post,a.status ,a.slot,a.Date from application a join jobs j on j.sno = a.job where a.id = "+id  ;
             st=jdbc.con.createStatement();
             rs=st.executeQuery(query);
-
+            System.out.println("---------------------------------------------------------------------------------------------");
+            System.out.printf("| %-12s | %-10s | %-10s |%-20s|%-20s|%n","Company","Post","Status","Slot","Date");
+            System.out.println("---------------------------------------------------------------------------------------------");
             while(rs.next()){
-                System.out.println("--------------------------------------------------");
-                System.out.printf("| %-10s | %-20s | %-10s |%n",
-                   rs.getString("j.company"), rs.getString("j.post"), rs.getString("a.status") );
-                   System.out.println("--------------------------------------------------");
+                
+                System.out.printf("| %-10s | %-10s | %-10s |%-20s|%-20s|%n",
+                   rs.getString("j.company"), rs.getString("j.post"), rs.getString("a.status"),rs.getString("a.slot"),rs.getDate("a.Date") );
+                   System.out.println("---------------------------------------------------------------------------------------------");
             }
 
         }catch(Exception e){

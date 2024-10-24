@@ -13,7 +13,8 @@ public class Employee {
     static ResultSet rs;
     static int empId;
     Employee(){
-        System.out.println("Enter 1:- For Add Job \nEnter 2:- For Manage Job\nEnter 3:- For Remove Jobs \nEnter 4:-  For manageApplications");
+       
+        System.out.println("Enter 1:- For Add Job \nEnter 2:- For Manage Job\nEnter 3:- For Remove Jobs \nEnter 4:-  For manageApplications\nEnter Any Number For Back");
         String n=s.nextLine();
         switch ((shortcut.changeformat(n))) {
                 case 1:
@@ -36,8 +37,13 @@ public class Employee {
     public void manageApplications() {
         try {
             employee_posts(empId); // Display available job posts
-            System.out.println("Enter the Serial Number (sno) of the job to manage applications:");
+            System.out.println("Enter the Serial Number (sno) of the job to manage applications:\nEnter 0 For Back");
+
             int sno = shortcut.changeformat(s.nextLine());  // Get job serial number
+            if (sno==0) {
+                new Employee();
+                return;
+            }
     
             // Query to get candidate applications and personal details for the job
             String query = "SELECT s.id, s.name, s.mobile_no, s.mail, s.age, s.skills, s.address, a.status, a.Date,a.slot " +
@@ -65,8 +71,7 @@ public class Employee {
                     System.out.printf("| %-13s | %-10s | %-10s | %-20s | %-7s | %-7s | %-6s | %-12s | %-10s|%-10s |%n",
                         "Candidate ID", "Name", "Mobile No.", "Email", "Age", "Skills", "Address", "Current Status", "Date","Slot");
                     System.out.println(
-                        "--------------------------------------------------------------------------------------------------------------------------------------------------------");
-    
+                        "--------------------------------------------------------------------------------------------------------------------------------------------------------");    
                     while (rs.next()) {
                         int candidateId = rs.getInt("id");
                         String name = rs.getString("name");
@@ -89,9 +94,14 @@ public class Employee {
                     }
     
                     // Ask the user to select a candidate for further actions
-                    System.out.println("Enter the Candidate ID to update their application status or conduct an interview:");
+                    System.out.println("Enter the Candidate ID to update their application status or conduct an interview:\nEnter 0 For Back");
+        
                     int selectedCandidateId = Integer.parseInt(s.nextLine());
-    
+
+                    if (selectedCandidateId==0) {
+                        new Employee();
+                        return;
+                    }
                     // Validate if the selected candidate ID is in the list
                     if (!candidateIds.contains(selectedCandidateId)) {
                         System.out.println("Invalid Candidate ID. Exiting...");
@@ -196,52 +206,12 @@ public class Employee {
         }
     }
     
-    
-    // private String timing() {
-    //   System.out.print("Enter Time to :- ");
-    //   String start=s.nextLine();
-    //   if ((shortcut.changeformat(start))>0&&(shortcut.changeformat(start))<=12) {
-        
-    //   }
-    //   else{
-    //     timing();
-    //   }
-    //     System.out.println(" Am Ya Pm :- ");
-    //     String day=s.nextLine();
-    //     if ((day.equalsIgnoreCase("am"))||day.equalsIgnoreCase("pm")) {
-            
-    //     }else{
-    //         timing();
-    //     }
-    //     System.out.println("End Time ");
-    //     String end=s.nextLine();
-    //   if ((shortcut.changeformat(end)<0&&shortcut.changeformat(end)>=12)) {
-        
-    //   } else {
-    //     timing();
-    //   }
-    //   System.out.println(" Am Ya Pm :- ");
-    //     String dayEnd=s.nextLine();
-    //     if ((dayEnd.equalsIgnoreCase("am"))||dayEnd.equalsIgnoreCase("pm")) {
-            
-    //     }else{
-    //         timing();
-    //     }
-    //    if (day.equalsIgnoreCase("am")&&dayEnd.equalsIgnoreCase("pm")||day.equalsIgnoreCase("pm")&&dayEnd.equalsIgnoreCase("am")) {
-        
-    //    }else{
-    //     timing();
-    //    }
-    //    return start+" "+day+" "+end+" "+dayEnd;
-    // }
-    // public void newEmployee() {
-
-    //        }
+   
     public void remove() {
         try {
            employee_posts(empId); // Display all jobs
           // Display all jobs
-    
+          
             // Get the serial number (sno) and employeeId as input
             System.out.println("Enter the Serial Number (sno) of the job to remove:");
             int sno = shortcut.changeformat(s.nextLine());  // Getting serial number as input
@@ -276,6 +246,7 @@ public class Employee {
         try {
             // Assume this method lists all jobs
             employee_posts(empId);
+            
             System.out.println("Enter the serial number to update:");
             
             int sno = shortcut.changeformat(s.nextLine());  // Getting serial number
@@ -382,6 +353,8 @@ public class Employee {
         try {
             // Input employee ID (assuming it's passed as empId)
             int employeeId = empId;
+          
+            
             
             // Input job position name
             System.out.println("Enter The Job Position Name:");
@@ -539,7 +512,6 @@ public class Employee {
     }
     }
 
-
     public static void employee_posts(int empId) {  // Pass the empId as an argument
 
         try {
@@ -554,18 +526,21 @@ public class Employee {
                 return;
             }
     
-            // Loop through the result set and display job details
+            // Loop through the result set and display job details in a poster format
             while (rs.next()) {
-                System.out.println("_______________________________________________________________");
-                
-                // Display job details in a formatted way
-                System.out.printf("| %-4s |%-6s%-46s|%n", "ID - " + rs.getString("sno"), "", rs.getString("company"));
-                System.out.printf("| %-60s |%n", "  " + rs.getString("post"));
-                System.out.printf("| %-60s |%n", "  " + rs.getString("timing"));
-                System.out.printf("| %-60s |%n", "  " + rs.getString("location"));
-                System.out.printf("| %-60s |%n", "  " + rs.getDate("Date"));
-                System.out.printf("|%-60s|%n", "______________________________________________________________");
-                System.out.println();
+                System.out.println("===============================================================");
+                System.out.printf("| %-4s : %-50s |%n", "ID", rs.getString("sno"));
+                System.out.printf("| %-4s : %-50s |%n", "Company", rs.getString("company"));
+                System.out.printf("| %-4s : %-50s |%n", "Post", rs.getString("post"));
+                System.out.printf("| %-4s : %-50s |%n", "Timing", rs.getString("timing"));
+                System.out.printf("| %-4s : %-50s |%n", "Location", rs.getString("location"));
+                System.out.printf("| %-4s : %-50s |%n", "Date", rs.getDate("Date"));
+                System.out.printf("| %-4s : %-50s |%n", "Salary", rs.getString("salary"));
+                System.out.printf("| %-4s : %-50s |%n", "Available Posts", rs.getInt("availablepost"));
+                System.out.printf("| %-4s : %-50s |%n", "Summary", rs.getString("summary"));
+                System.out.printf("| %-4s : %-50s |%n", "Experience", rs.getString("experience"));
+                System.out.printf("| %-4s : %-50s |%n", "Interview Date", rs.getDate("interview_Date"));
+                System.out.println("===============================================================\n");
             }
     
         } catch (Exception e) {
@@ -573,6 +548,7 @@ public class Employee {
             e.printStackTrace();
         }
     }
+    
     
 
     

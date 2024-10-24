@@ -42,13 +42,9 @@ public class job_seaker {
                     if(choice==1){
                         System.out.println("UPLODE YOUR");
                         // seekerInfo(id);
-<<<<<<< HEAD
                         // ResumeUtils.uploadResume(id);
                         // ResumeUtils.Resumetaking(id);
-                        jj(id);
-=======
-                        System.out.println("01");
->>>>>>> 744ddfb583a743f4ab5f1363ce820707b1cefc16
+
 
                         seekerInfo(id);
                     }
@@ -265,8 +261,11 @@ public class job_seaker {
         System.out.print("Enter your mobile number -> ");
         // long number=sc.nextLong(10);       
          long phonenumber = shortcut.phonenumbertaking();
-        System.out.print("Enter your mail id -> ");
-        String mail = sc.nextLine();
+        // System.out.print("Enter your mail id -> ");
+        String mail = shortcut.validMailTaking();
+        if(mail.equals("Cancel form")){
+            return 999;
+        }
         System.out.print("Enter your age -> ");
         int age = shortcut.changeformat(sc.nextLine());
         System.out.print("Enter your Address -> ");
@@ -433,7 +432,7 @@ public class job_seaker {
             System.out.println("-------------------------------------");
             System.out.println(" CREATE PROFILE ");
         int num= job_seaker.takingdetails(id);
-         if (num>0) {
+         if (num==1) {
             System.out.println("-----------------------------------");
             System.out.println("Your id -> "+ id);
            System.out.println("Create password -> ");
@@ -460,6 +459,9 @@ public class job_seaker {
              System.out.println("--------------------------------------");
             
             job_seaker.seekerInfo(id);
+         }else if(num==999){
+            System.out.println("-------------------------------");
+            System.out.println("Form has been Cancled by user");
          }
          else{
             System.out.println("Somthing Went Wrong !....");
@@ -633,9 +635,6 @@ public class job_seaker {
         }}
         
     }
-    public static void jj(int id ){
-        ResumeUtils rt=new ResumeUtils( id);
-                        // rt.uploadResume(id);
-    }
+    
 
 }

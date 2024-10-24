@@ -415,7 +415,9 @@ System.out.println("Status updated for candidate ID: " + selectedCandidateId);
         }
         
 
-    public static void employeeLogin(){
+public static void employeeLogin(){
+        while (true) {
+  
         System.out.print("Enter Login id -> ");
         int tempId = shortcut.changeformat(s.nextLine());
 
@@ -437,7 +439,7 @@ System.out.println("Status updated for candidate ID: " + selectedCandidateId);
                System.out.println("Your id and password is not found");
                System.out.println("may be your password is incorrect");
                System.out.println("or your id does'nt exist");
-              employeeLogin();
+            //   employeeLogin();
             }else if(tempnum2==1){
                 System.out.println("------------------------------");
                 System.out.println("Logged in successfully");
@@ -445,6 +447,7 @@ System.out.println("Status updated for candidate ID: " + selectedCandidateId);
                 empId=tempId;
                // run 
                new Employee();
+               return;
             }
             else{
                System.out.println("error");
@@ -456,6 +459,16 @@ System.out.println("Status updated for candidate ID: " + selectedCandidateId);
             System.out.println(exception);
             System.out.println("PROBLEM IN CHECKING DETAILS");
         }
+
+        System.out.println("1. Re try");
+        System.out.println("2. Back");
+        int tempselection=shortcut.changeformat(s.nextLine());
+        if(tempselection==1){
+
+        }else{
+            return;
+        }
+    }
     }
 
     public static void employee_posts(int jId) {

@@ -23,7 +23,6 @@ public class job_seaker {
            
 
                 System.out.println("1 - UPLODE YOUR'S RESUME");
-              
                 System.out.println("2 - APPLY FOR JOB'S");
                 boolean trackdata=shortcut.checkdataexist(id, "id", "application");
                 boolean isDataExists = shortcut.checkdataexist(id, "id", "seaker_data");
@@ -41,13 +40,15 @@ public class job_seaker {
 
                 
                     if(choice==1){
-                        System.out.println("UPLODE YOUR");
+                        // System.out.println("UPLODE YOUR");
+                        // // seekerInfo(id);
+                        // System.out.println("01");
+
                         // seekerInfo(id);
-                        // ResumeUtils.uploadResume(id);
-                        // ResumeUtils.Resumetaking(id);
-
-
-                        seekerInfo(id);
+                        // String [] tempString=new String[1];
+                        // tempString[0]= ""+id+"";
+                        // ResumeUtils.main(tempString);
+                        ResumeUtils.uploadResume(id);
                     }
                     else if(choice==2){
                         // System.out.println("APPLY FOR JOBS.");
@@ -262,18 +263,17 @@ public class job_seaker {
         System.out.print("Enter your mobile number -> ");
         // long number=sc.nextLong(10);       
          long phonenumber = shortcut.phonenumbertaking();
-        // System.out.print("Enter your mail id -> ");
-        String mail = shortcut.validMailTaking();
-        if(mail.equals("Cancel form")){
-            return 999;
-        }
+        System.out.print("Enter your mail id -> ");
+        String mail = sc.nextLine();
         System.out.print("Enter your age -> ");
         int age = shortcut.changeformat(sc.nextLine());
         System.out.print("Enter your Address -> ");
         String address = sc.nextLine();
+        System.out.println("use (,) for differientiate language");
+        System.out.println("Don't use space");
         System.out.print("Enter your Skills -> ");
         String skills = sc.nextLine();
-
+        skills=skills.replace(" ", "");
        
 
         System.out.println("Do you have any experience");
@@ -433,18 +433,19 @@ public class job_seaker {
             System.out.println("-------------------------------------");
             System.out.println(" CREATE PROFILE ");
         int num= job_seaker.takingdetails(id);
-         if (num==1) {
+         if (num>0) {
             System.out.println("-----------------------------------");
             System.out.println("Your id -> "+ id);
            System.out.println("Create password -> ");
            String password=sc.nextLine();
            
            try{
-               String sqlquery="insert into js_acc values(?,?,?)";
+               String sqlquery="insert into js_acc values(?,?,?,?)";
                pst=jdbc.con.prepareStatement(sqlquery);
                pst.setInt(1, id);
                pst.setString(2, password);
                pst.setString(3, "seaker");
+               pst.setString(4, "ACTIVE");
                pst.executeUpdate();
                
                System.out.println("-------------------------------------");
@@ -460,9 +461,6 @@ public class job_seaker {
              System.out.println("--------------------------------------");
             
             job_seaker.seekerInfo(id);
-         }else if(num==999){
-            System.out.println("-------------------------------");
-            System.out.println("Form has been Cancled by user");
          }
          else{
             System.out.println("Somthing Went Wrong !....");
@@ -554,17 +552,15 @@ public class job_seaker {
 
     public static void trackApplication(int id){
         try{
-            String query = "select j.company,j.post,a.status ,a.slot,a.Date from application a join jobs j on j.sno = a.job where a.id = "+id  ;
+            String query = "select j.company,j.post,a.status from application a join jobs j on j.sno = a.job where a.id = "+id  ;
             st=jdbc.con.createStatement();
             rs=st.executeQuery(query);
-            System.out.println("---------------------------------------------------------------------------------------------");
-            System.out.printf("| %-12s | %-10s | %-10s |%-20s|%-20s|%n","Company","Post","Status","Slot","Date");
-            System.out.println("---------------------------------------------------------------------------------------------");
+
             while(rs.next()){
-                
-                System.out.printf("| %-10s | %-10s | %-10s |%-20s|%-20s|%n",
-                   rs.getString("j.company"), rs.getString("j.post"), rs.getString("a.status"),rs.getString("a.slot"),rs.getDate("a.Date") );
-                   System.out.println("---------------------------------------------------------------------------------------------");
+                System.out.println("--------------------------------------------------");
+                System.out.printf("| %-10s | %-20s | %-10s |%n",
+                   rs.getString("j.company"), rs.getString("j.post"), rs.getString("a.status") );
+                   System.out.println("--------------------------------------------------");
             }
 
         }catch(Exception e){
@@ -638,6 +634,6 @@ public class job_seaker {
         }}
         
     }
-    
+
 
 }

@@ -1,638 +1,564 @@
-
-import java.sql.Statement;
-import java.time.YearMonth;
-import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.*;
 
 
-// import java.sql.Date;
-
-
-public class job_seaker {
-
-        static ResultSet rs;
-        static Statement st;
-        static Scanner sc = new Scanner(System.in);
-        static PreparedStatement pst;
-       
-
-        // Seeker personal details3
-    public static void seekerInfo(int id){
-            // Scanner scanner = new Scanner(System.in);
-           
-
-                System.out.println("1 - UPLODE YOUR'S RESUME");
-                System.out.println("2 - APPLY FOR JOB'S");
-                boolean trackdata=shortcut.checkdataexist(id, "id", "application");
-                boolean isDataExists = shortcut.checkdataexist(id, "id", "seaker_data");
-                if(trackdata==true){
-                    System.out.println("3 - Track Application");
-                }
-                if(isDataExists==true){
-                    System.out.println("4 - View self data");
-                }
-                System.out.println("5 - Logout");
-                // System.out.println("4 - TRACK APPLICATION");
-                // System.out.println("5 - Exit");
-                System.out.print("Enter your choice: ");
-                int choice = shortcut.changeformat(sc.nextLine());
-
-                
-                    if(choice==1){
-                        System.out.println("UPLODE YOUR");
-                        // seekerInfo(id);
-
-
-                        seekerInfo(id);
+public class Employee {
+   static Scanner s=new Scanner(System.in);
+    Connection con=jdbc.con;
+    PreparedStatement ps;
+    static ResultSet rs;
+    static int empId;
+    Employee(){
+        System.out.println("Enter 1:- For Add Job \nEnter 2:- For Manage Job\nEnter 3:- For Remove Jobs \nEnter 4:-  For manageApplications");
+        String n=s.nextLine();
+        switch ((shortcut.changeformat(n))) {
+                case 1:
+                add();
+                break;
+                case 2:
+                manage();
+                break;
+                case 3:
+                remove();
+                break;
+                case 4:
+                manageApplications();
+                break;
+                default:
+                System.out.println("Exit......");
+                break;
+        }
+    }
+    public void manageApplications() {
+        try {
+            employee_posts(empId); // Display available job posts
+            System.out.println("Enter the Serial Number (sno) of the job to manage applications:");
+            int sno = shortcut.changeformat(s.nextLine());  // Get job serial number
+    
+            // Query to get candidate applications and personal details for the job
+            String query = "SELECT s.id, s.name, s.mobile_no, s.mail, s.age, s.skills, s.address, a.status, a.Date " +
+                           "FROM seaker_data s " +
+                           "JOIN application a ON s.id = a.id " +
+                           "WHERE a.job = ?";
+    
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, sno);  // Set the job serial number
+    
+                // Execute the query and get the result
+                try (ResultSet rs = ps.executeQuery()) {
+                    // Check if there are any applicants
+                    if (!rs.isBeforeFirst()) {
+                        System.out.println("No candidates have applied for this job.");
+                        manageApplications();
+                        return;
                     }
-                    else if(choice==2){
-                        // System.out.println("APPLY FOR JOBS.");
-                        seaker(id);
+    
+                    // Display candidate details in a structured list
+                    System.out.println("Candidates who have applied for this job:");
+                    ArrayList<Integer> candidateIds = new ArrayList<>();
+                    System.out.println(
+                        "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+                    System.out.printf("| %-13s | %-10s | %-10s | %-20s | %-7s | %-7s | %-6s | %-12s | %-10s |%n",
+                        "Candidate ID", "Name", "Mobile No.", "Email", "Age", "Skills", "Address", "Current Status", "Date");
+                    System.out.println(
+                        "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+    
+                    while (rs.next()) {
+                        int candidateId = rs.getInt("id");
+                        String name = rs.getString("name");
+                        Long mobileNo = rs.getLong("mobile_no");
+                        String email = rs.getString("mail");
+                        int age = rs.getInt("age");
+                        String skills = rs.getString("skills");
+                        String address = rs.getString("address");
+                        String currentStatus = rs.getString("status");
+                        Date interviewDate = rs.getDate("Date");
+    
+                        System.err.printf("| %-13s | %-10s | %-10s | %-20s | %-7s | %-7s | %-6s | %-12s | %-10s |%n",
+                            candidateId, name, mobileNo, email, age, skills, address, currentStatus, interviewDate);
+                        System.out.println(
+                            "--------------------------------------------------------------------------------------------------------------------------------------------------------");
+    
+                        // Add candidateId to the list for further selection
+                        candidateIds.add(candidateId);
                     }
-                    else if(choice==5){
-                        System.out.println("Logout");
+    
+                    // Ask the user to select a candidate for further actions
+                    System.out.println("Enter the Candidate ID to update their application status or conduct an interview:");
+                    int selectedCandidateId = Integer.parseInt(s.nextLine());
+    
+                    // Validate if the selected candidate ID is in the list
+                    if (!candidateIds.contains(selectedCandidateId)) {
+                        System.out.println("Invalid Candidate ID. Exiting...");
+                        return;
                     }
-                    else if(choice==3 && trackdata==true){
-                        //track application
-                        trackApplication(id);
-                        seekerInfo(id);
-                    }else if(choice==4 && isDataExists==true){
-                        // System.out.println("This method is in working state ");
-                        // make update method and call from here 
-                        try{
-                            String sql = "select * from seaker_data where id = "+id;
-                            st=jdbc.con.createStatement();
-                            rs=st.executeQuery(sql);
-
-                            while(rs.next()){
-                                System.out.println("-----------------------------------------------");
-                                System.out.println("Your id   -> "+rs.getString("id"));
-                                System.out.println("Name      -> "+rs.getString("name"));
-                                System.out.println("Mobile no -> "+rs.getString("mobile_no"));
-                                System.out.println("Mail      -> "+rs.getString("mail"));
-                                System.out.println("Age       -> "+rs.getString("age"));
-                                System.out.println("Skills    -> "+rs.getString("skills"));
-                                System.out.println("Address   -> "+rs.getString("address"));
-                                System.out.println("------------------------------------------------");
-
-                                System.out.println("1. Update");
-                                System.out.println("2. Back");
-                                int tempp=shortcut.changeformat(sc.nextLine());
-                                if(tempp==1){
-                                    updateYourSelf(id);
-                                }else{
-                                    seekerInfo(id);
+    
+                    // Ask for a new status for the selected candidate
+                    String newStatus = "";
+                    while (true) {
+                        System.out.println("Enter new status for this candidate (Reject, Pending, Select):");
+                        newStatus = s.next();
+                        if (newStatus.equalsIgnoreCase("Reject") || 
+                            newStatus.equalsIgnoreCase("Pending") || 
+                            newStatus.equalsIgnoreCase("Select")) {
+                            break;
+                        } else {
+                            System.out.println("Invalid status. Please enter again.");
+                        }
+                    }
+    
+                    // Update the status for the selected candidate in the 'application' table
+                    String updateQuery = "UPDATE application SET status = ? WHERE id = ? AND job = ?";
+                    try (PreparedStatement updatePs = con.prepareStatement(updateQuery)) {
+                        updatePs.setString(1, newStatus);
+                        updatePs.setInt(2, selectedCandidateId);
+                        updatePs.setInt(3, sno);
+                        updatePs.executeUpdate();
+                        System.out.println("Status updated for candidate ID: " + selectedCandidateId);
+                    }
+    
+                    // Now handle interview scheduling
+                    if (newStatus.equalsIgnoreCase("Select")) {
+                        String dateQuery = "SELECT interview_Date FROM jobs WHERE sno = ?";
+                        try (PreparedStatement datePs = con.prepareStatement(dateQuery)) {
+                            datePs.setInt(1, sno);
+                            try (ResultSet dateRs = datePs.executeQuery()) {
+                                if (dateRs.next()) {
+                                    java.sql.Date interviewDate = dateRs.getDate("interview_Date");
+                                    System.out.println("Initial Interview Date: " + interviewDate);
+    
+                                    String availableSlot = "";
+                                    boolean slotFound = false;
+    
+                                    while (!slotFound) {
+                                        String timeSlotQuery = "SELECT COUNT(*) AS interview_count FROM application a " +
+                                                               "JOIN jobs j ON a.job = j.sno " +
+                                                               "WHERE j.interview_Date = ? AND a.status = 'Select'";
+                                        try (PreparedStatement timeSlotPs = con.prepareStatement(timeSlotQuery)) {
+                                            timeSlotPs.setDate(1, interviewDate);
+                                            try (ResultSet timeSlotRs = timeSlotPs.executeQuery()) {
+                                                int interviewCount = 0;
+                                                if (timeSlotRs.next()) {
+                                                    interviewCount = timeSlotRs.getInt("interview_count");
+                                                }
+    
+                                                // Offer time slots based on the current count of interviews
+                                                if (interviewCount < 3) {
+                                                    availableSlot = "10:00 AM to 12:00 PM";
+                                                    System.out.println("Available Slot: " + availableSlot);
+                                                    slotFound = true;
+                                                } else if (interviewCount < 6) {
+                                                    availableSlot = "1:00 PM to 3:00 PM";
+                                                    System.out.println("Available Slot: " + availableSlot);
+                                                    slotFound = true;
+                                                } else if (interviewCount < 9) {
+                                                    availableSlot = "4:00 PM to 6:00 PM";
+                                                    System.out.println("Available Slot: " + availableSlot);
+                                                    slotFound = true;
+                                                } else {
+                                                    // All slots filled for this date, move to the next date
+                                                    Calendar cal = Calendar.getInstance();
+                                                    cal.setTime(interviewDate);
+                                                    cal.add(Calendar.DATE, 1);
+                                                    interviewDate = new java.sql.Date(cal.getTimeInMillis());
+                                                    System.out.println("All slots are filled for " + interviewDate + ". Checking the next available date.");
+                                                }
+                                            }
+                                        }
+                                    }
+    
+                                    // Insert interview date and slot into the application table
+                                    String q = "UPDATE application SET Date = ?, slot = ? WHERE id = ?";
+                                    try (PreparedStatement q2 = con.prepareStatement(q)) {
+                                        q2.setDate(1, interviewDate);
+                                        q2.setString(2, availableSlot);
+                                        q2.setInt(3, selectedCandidateId);
+                                        q2.executeUpdate();
+                                        System.out.println("Interview scheduled on " + interviewDate + " during the slot: " + availableSlot);
+                                    }
                                 }
                             }
-                            
-                        }catch(Exception e){
-                            System.out.println(e);
                         }
                     }
-                    else{
-                        System.out.println("Invalid choice. Please enter a valid choice");
-                        seekerInfo(id);
-                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+    
+    
+    // private String timing() {
+    //   System.out.print("Enter Time to :- ");
+    //   String start=s.nextLine();
+    //   if ((shortcut.changeformat(start))>0&&(shortcut.changeformat(start))<=12) {
+        
+    //   }
+    //   else{
+    //     timing();
+    //   }
+    //     System.out.println(" Am Ya Pm :- ");
+    //     String day=s.nextLine();
+    //     if ((day.equalsIgnoreCase("am"))||day.equalsIgnoreCase("pm")) {
+            
+    //     }else{
+    //         timing();
+    //     }
+    //     System.out.println("End Time ");
+    //     String end=s.nextLine();
+    //   if ((shortcut.changeformat(end)<0&&shortcut.changeformat(end)>=12)) {
+        
+    //   } else {
+    //     timing();
+    //   }
+    //   System.out.println(" Am Ya Pm :- ");
+    //     String dayEnd=s.nextLine();
+    //     if ((dayEnd.equalsIgnoreCase("am"))||dayEnd.equalsIgnoreCase("pm")) {
+            
+    //     }else{
+    //         timing();
+    //     }
+    //    if (day.equalsIgnoreCase("am")&&dayEnd.equalsIgnoreCase("pm")||day.equalsIgnoreCase("pm")&&dayEnd.equalsIgnoreCase("am")) {
+        
+    //    }else{
+    //     timing();
+    //    }
+    //    return start+" "+day+" "+end+" "+dayEnd;
+    // }
+    // public void newEmployee() {
 
-    // shows posts names details
-    public static void posts() {
-
+    //        }
+    public void remove() {
         try {
-            // String query="select * from jobs"
-            st = jdbc.con.createStatement();
-            rs = st.executeQuery("select * from jobs");
-            // System.out.println(rs.next());
-            // String [] postsarray = new String[5];
-            if(!rs.isBeforeFirst()){
-                System.out.println("There is no job available at this time");
+           employee_posts(empId); // Display all jobs
+          // Display all jobs
+    
+            // Get the serial number (sno) and employeeId as input
+            System.out.println("Enter the Serial Number (sno) of the job to remove:");
+            int sno = shortcut.changeformat(s.nextLine());  // Getting serial number as input
+            
+            // Prepare the delete query based on the serial number (sno) and employeeId
+            String q = "DELETE FROM jobs WHERE sno = ? AND createdBy = ?";
+    
+            // Prepare the statement
+            PreparedStatement ps = con.prepareStatement(q);
+    
+            // Set the values for the placeholders
+            ps.setInt(1, sno);
+            ps.setInt(2, empId);
+    
+            // Execute the delete query
+            int rowsAffected = ps.executeUpdate();
+    
+            // Check if the job was successfully removed
+            if (rowsAffected > 0) {
+                System.out.println("Job with serial number " + sno + " and employee ID " +empId + " has been removed.");
+            } else {
+                System.out.println("No job found with serial number " + sno + " and employee ID " + empId);
+            }
+    
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new Employee();
+    }
+    
+    public void manage() {
+        try {
+            // Assume this method lists all jobs
+            employee_posts(empId);
+            System.out.println("Enter the serial number to update:");
+            
+            int sno = shortcut.changeformat(s.nextLine());  // Getting serial number
+            
+            // Fetching the `createdBy` value for the job
+            String fetchCreatedByQuery = "SELECT createdBy FROM jobs WHERE sno = ?";
+            PreparedStatement fetchCreatedByPS = con.prepareStatement(fetchCreatedByQuery);
+            fetchCreatedByPS.setInt(1, sno);
+            
+            ResultSet rs = fetchCreatedByPS.executeQuery();
+            
+            if (rs.next()) {
+                int createdBy = rs.getInt("createdBy");
+                
+                // Assuming `currentEmployeeId` holds the ID of the currently logged-in employee
+                int currentEmployeeId =empId; 
+                
+                // Check if the current employee is the one who added the job
+                if (currentEmployeeId != createdBy) {
+                    System.out.println("You do not have permission to update this job.");
+                    return;
+                }
+            } else {
+                System.out.println("Job not found with the given serial number.");
                 return;
             }
+    
+            // Display options for what the user wants to update
+            System.out.println("What do you want to update?");
+            System.out.println("1. Salary");
+            System.out.println("2. Timing");
+            System.out.println("3. Available Posts");
+            System.out.println("4. Experience");
+            System.out.println("5. Location");
+            int choice = Integer.parseInt(s.nextLine());
+    
+            String q = "";  // SQL query placeholder
+            PreparedStatement ps;
+    
+            // Handle user's choice
+            switch (choice) {
+                case 1: // Update Salary
+                    System.out.println("Enter new Salary:");
+                    String salary = s.nextLine();
+                    q = "UPDATE jobs SET salary = ? WHERE sno = ?";  // Update based on sno
+                    ps = con.prepareStatement(q);
+                    ps.setString(1, salary);
+                    ps.setInt(2, sno);
+                    break;
+    
+                case 2: // Update Timing
+                    System.out.println("Enter new Timing:");
+                    String time = s.nextLine();
+                    q = "UPDATE jobs SET timing = ? WHERE sno = ?";  // Update based on sno
+                    ps = con.prepareStatement(q);
+                    ps.setString(1, time);
+                    ps.setInt(2, sno);
+                    break;
+    
+                case 3: // Update Available Posts
+                    System.out.println("Enter new Available Posts:");
+                    int availablePost = Integer.parseInt(s.nextLine());
+                    q = "UPDATE jobs SET availablepost = ? WHERE sno = ?";  // Update based on sno
+                    ps = con.prepareStatement(q);
+                    ps.setInt(1, availablePost);
+                    ps.setInt(2, sno);
+                    break;
+    
+                case 4: // Update Experience
+                    System.out.println("Enter new Experience:");
+                    String experience = s.nextLine();
+                    q = "UPDATE jobs SET experience = ? WHERE sno = ?";  // Update based on sno
+                    ps = con.prepareStatement(q);
+                    ps.setString(1, experience);
+                    ps.setInt(2, sno);
+                    break;
+    
+                case 5: // Update Location
+                    System.out.println("Enter new Location:");
+                    String location = s.nextLine();
+                    q = "UPDATE jobs SET location = ? WHERE sno = ?";  // Update based on sno
+                    ps = con.prepareStatement(q);
+                    ps.setString(1, location);
+                    ps.setInt(2, sno);
+                    break;
+    
+                default:
+                    System.out.println("Invalid choice.");
+                    return;
+            }
+    
+            // Execute the query
+            ps.executeUpdate();
+            System.out.println("Job details updated successfully.");
+    
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new Employee();
+    }
+    
         
-            while (rs.next()==true) {
-               
+    public void add() {  // Accept employee ID as a parameter
+        try {
+            // Input employee ID (assuming it's passed as empId)
+            int employeeId = empId;
+            
+            // Input job position name
+            System.out.println("Enter The Job Position Name:");
+            String job = s.nextLine();
+    
+            // Input salary
+            System.out.println("Enter The Salary:");
+            String salary = s.nextLine();
+    
+            // Input timing
+            System.out.println("Enter The Time:");
+            String time = timing();
+    
+            // Input available posts
+            System.out.println("How Many Posts Are There:");
+            int availablePost = shortcut.changeformat(s.nextLine());
+    
+            // Input job summary
+            System.out.println("Enter The Job Summary:");
+            String summary = s.nextLine();
+    
+            // Input job location
+            System.out.println("Enter The Location:");
+            String location = s.nextLine();
+    
+            // Input required experience
+            System.out.println("Enter The Required Experience:");
+            String experience = s.nextLine();
+    
+            // Input company name
+            System.out.println("Enter The Company Name:");
+            String company = s.nextLine();
+    
+            // Input interview date
+            System.out.println("Enter The Interview Date (yyyy-mm-dd):");
+            String interviewDateString = s.nextLine();
+            java.sql.Date interviewDate = java.sql.Date.valueOf(interviewDateString); // Convert String to Date
+    
+            // Get the current date
+            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+    
+            // SQL query to insert data including the interview date and createdBy (employee ID)
+            String q = "INSERT INTO jobs (post, salary, timing, availablepost, Date, summary, location, experience, company, interview_Date, createdBy) " +
+                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+            // Prepare the statement
+            ps = con.prepareStatement(q);
+    
+            // Set the values for the placeholders
+            ps.setString(1, job);
+            ps.setString(2, salary);
+            ps.setString(3, time);
+            ps.setInt(4, availablePost);
+            ps.setDate(5, currentDate);  // Set the current date
+            ps.setString(6, summary);
+            ps.setString(7, location);
+            ps.setString(8, experience);
+            ps.setString(9, company);
+            ps.setDate(10, interviewDate);  // Set the interview date
+            ps.setInt(11, employeeId);  // Set the employee ID in the createdBy column
+    
+            // Execute the query
+            ps.executeUpdate();
+    
+            System.out.println("Data inserted successfully!");
+    
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        new Employee();  // Call to Employee class, if necessary
+    }
+    
+        
+        // Timing method remains unchanged
+        public String timing() {
+            String defaultTime = "";
+            try {
+                System.out.println("Select The Time");
+                System.out.println("Enter 1 :- Full Time");
+                System.out.println("Enter 2 :- Part Time");
+        
+                int num = shortcut.changeformat(s.nextLine());
+                switch (num) {
+                    case 1:
+                        defaultTime = "Full Time";
+                        break;
+                    case 2:
+                        defaultTime = "Part Time";
+                        break;
+                    default:
+                        defaultTime = "Part Time";
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid Input...\nTry Again");
+                timing();
+            }
+            return defaultTime;
+        }
+        
+
+    public static void employeeLogin(){
+        System.out.print("Enter Login id -> ");
+        int tempId = shortcut.changeformat(s.nextLine());
+
+        System.out.print("Enter password -> ");
+        String password= s.nextLine();
+
+        try {
+            Statement st=jdbc.con.createStatement();
+            rs=st.executeQuery("select pass from js_acc where id = "+tempId+" and role = 'employee'");
+            int tempnum2=0;
+            while (rs.next()) {
+                String temp_pass = rs.getString("pass");
+                if(temp_pass.equals(password)){
+                    tempnum2++;
+                }
+            }
+
+            if(tempnum2==0){
+               System.out.println("Your id and password is not found");
+               System.out.println("may be your password is incorrect");
+               System.out.println("or your id does'nt exist");
+              employeeLogin();
+            }else if(tempnum2==1){
+                System.out.println("------------------------------");
+                System.out.println("Logged in successfully");
+                System.out.println("------------------------------");
+                empId=tempId;
+               // run 
+               new Employee();
+            }
+            else{
+               System.out.println("error");
+               System.out.println("error in login job seaker account ");
+
+            }
+
+        }catch (Exception exception) {
+            System.out.println(exception);
+            System.out.println("PROBLEM IN CHECKING DETAILS");
+        }
+    }
+
+    public static void employee_posts(int empId) {  // Pass the empId as an argument
+
+        try {
+            // Prepare a query to select jobs created by the employee with the given empId
+            String query = "SELECT * FROM jobs WHERE createdBy = " + empId;
+            Statement st = jdbc.con.createStatement();
+            ResultSet rs = st.executeQuery(query);
+    
+            // Check if there are any jobs created by the employee
+            if (!rs.isBeforeFirst()) {
+                System.out.println("There is no job available at this time.");
+                return;
+            }
+    
+            // Loop through the result set and display job details
+            while (rs.next()) {
                 System.out.println("_______________________________________________________________");
-                // System.out.printf("| %-60s|%n","-------------------------------------------------------------");
-                // System.out.printf("| %-60s |%n","Serial number -> "+rs.getString("sno"));
                 
-                System.out.printf("| %-4s |%-6s%-46s|%n",
-                                "ID - "+ rs.getString("sno"),"",rs.getString("company") );
-                System.out.printf("| %-60s |%n","  "+rs.getString("post"));
-                // System.out.printf("| %-60s |%n","Salary -> "+rs.getString("salary"));
-                System.out.printf("| %-60s |%n","  "+rs.getString("timing"));
-                System.out.printf("| %-60s |%n","  "+rs.getString("location"));
-                System.out.printf("| %-60s |%n","  "+rs.getDate("Date"));
-                // System.out.println("-------------------------------------------------------------");
-                System.out.printf("|%-60s|%n","______________________________________________________________");
+                // Display job details in a formatted way
+                System.out.printf("| %-4s |%-6s%-46s|%n", "ID - " + rs.getString("sno"), "", rs.getString("company"));
+                System.out.printf("| %-60s |%n", "  " + rs.getString("post"));
+                System.out.printf("| %-60s |%n", "  " + rs.getString("timing"));
+                System.out.printf("| %-60s |%n", "  " + rs.getString("location"));
+                System.out.printf("| %-60s |%n", "  " + rs.getDate("Date"));
+                System.out.printf("|%-60s|%n", "______________________________________________________________");
                 System.out.println();
             }
-        
-            // System.out.println(
-            //         "--------------------------------------------------------------------------------------------------------------------------------------------------------");
-
+    
         } catch (Exception e) {
-            System.out.println("error while receving");
-            System.out.println(e);
-            e.getStackTrace();
-        }
-
-        // try {
-        //     // String query="select * from jobs"
-            // st = jdbc.con.createStatement();
-        //     rs = st.executeQuery("select * from jobs");
-
-        //     System.out.println(
-        //             "--------------------------------------------------------------------------------------------------------------------------------------------------------");
-        //     System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s |%n",
-        //             "ID", "POST", "SALARY", "TIMING", "SEATS");
-
-        //     System.out.println(
-        //             "--------------------------------------------------------------------------------------------------------------------------------------------------------");
-
-        //     while (rs.next()) {
-        //         int id = rs.getInt("sno");
-        //         String post = rs.getString("post");
-        //         String salary = rs.getString("salary");
-        //         String timing = rs.getString("timing");
-        //         int seats = rs.getInt("availablepost");
-
-        //         System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s |%n",
-        //                 id, post, salary, timing, seats);
-
-        //     }
-        //     System.out.println(
-        //             "--------------------------------------------------------------------------------------------------------------------------------------------------------");
-
-        // } catch (Exception e) {
-        //     System.out.println("error while receving");
-        //     System.out.println(e);
-        //     e.getStackTrace();
-        // }
-    }
-
-    // seaker works
-    public static void seaker(int id) {
-        System.out.println("AVAILABLE POSTS ARE SHOWN BELOW ");
-        System.out.println();
-
-        // call post method so all of post are shown
-        
-        posts();
-
-        System.out.println("ENTER SERIAL NUMBER FOR SELECT POST ");
-        System.out.println("PRESS -1 FOR MAIN MENU");
-
-        String temp_selected = sc.nextLine();
-        int select = 0;
-
-        try {
-            select = Integer.parseInt(temp_selected);
-            st = jdbc.con.createStatement();
-            rs = st.executeQuery("select sno from jobs");
-
-            int temp = 0;
-            while (rs.next()) {
-                if (rs.getInt("sno") == select) {
-                    temp = 1;
-                }
-            }
-            if (temp == 0 && select != -1) {
-                // String tempString = "kk";
-                // int tempp = Integer.parseInt(tempString);
-                throw new Exception("Invalid selection exception");
-            } else {
-               if(temp==1){
-                //next step
-                //sout summary of selected job
-                post2(select);
-                System.out.println("------------------------------");
-                System.out.println("1 -> Apply for this job");
-                System.out.println("Back Menu - press any number");
-                int sel=shortcut.changeformat(sc.nextLine());
-                if(sel==1){
-                    // apply
-                    // System.out.println("applied");
-
-                    try{
-                        pst=jdbc.con.prepareStatement("insert into application (id, job,status) values (?,?,?)");
-                        pst.setInt(1, id);
-                        pst.setInt(2, select);
-                        pst.setString(3, "pending");
-                        int result = pst.executeUpdate();
-                        if(result==1){
-                            System.out.println("Applied succefully");
-                            seekerInfo(id);
-                        }else{
-                            System.out.println("Unable to apply");
-                        }
-
-                    }catch(Exception e ){
-                        System.out.println(e);
-                    }
-                }else{
-                    seekerInfo(id);
-                }
-
-
-
-               }else if(select==-1){
-                // back button
-                // System.out.println("back");
-                 // just fr testing
-                 seekerInfo(id);
-               }
-            }
-
-        } catch (Exception e) {
-            System.out.println("Enter valid selection");
-            seaker(id);
+            System.out.println("Error while receiving data.");
+            e.printStackTrace();
         }
     }
+    
 
-    public static int takingdetails(int id) {
-        
-
-        System.out.println("-----------ENTER  YOUR PERSONAL DETAILS -----------");
-        System.out.print("Enter your name -> ");
-        String name = shortcut.nameFormating();
-        System.out.print("Enter your mobile number -> ");
-        // long number=sc.nextLong(10);       
-         long phonenumber = shortcut.phonenumbertaking();
-        System.out.print("Enter your mail id -> ");
-        String mail = sc.nextLine();
-        System.out.print("Enter your age -> ");
-        int age = shortcut.changeformat(sc.nextLine());
-        System.out.print("Enter your Address -> ");
-        String address = sc.nextLine();
-        System.out.print("Enter your Skills -> ");
-        String skills = sc.nextLine();
-
-       
-
-        System.out.println("Do you have any experience");
-        System.out.print("1 -> Yes \nany other number -> No");
-        System.out.print(" -> ");
-        int experience_selection = shortcut.changeformat(sc.nextLine());
-        if (experience_selection == 1) {
-            // experience taken
-            // with ref of id
-            experience(id);
-        }
-
-        System.out.println("had you done any project yet! ");
-        System.out.print("1 -> Yes \nany other number -> No");
-        System.out.print(" -> ");
-        int project_select = shortcut.changeformat(sc.nextLine());
-        if (project_select == 1) {
-            // project taking method
-            // with ref of id
-            project(id);
-
-        }
-
-        String sql2 = "insert into seaker_data(id, name, mobile_no, mail, age, skills, address, experienced, project, date) values( ?,?, ?,?,?,?,?,?,?, current_date())";
-        try {
-            pst = jdbc.con.prepareStatement(sql2);
-
-            pst.setInt(1, id);
-            pst.setString(2, name);
-            pst.setLong(3, phonenumber);
-            pst.setString(4, mail);
-            pst.setInt(5, age);
-            pst.setString(6, skills);
-            pst.setString(7, address);
-            // pst.setString(6, );
-            if (experience_selection == 1) {
-                pst.setString(8, "yes");
-            } else {
-                pst.setString(8, "no");
-            }
-
-            if (project_select == 1) {
-                pst.setString(9, "yes");
-            } else {
-                pst.setString(9, "no");
-            }
-           
-           return pst.executeUpdate();
-           
-        }
-        
-        catch (Exception e) {
-            System.out.println(e);
-            System.out.println(e.getMessage());
-            e.getStackTrace();
-            System.exit(0);
-            return 0;
-        }
-        // job_seaker.seekerInfo(id);
-    }
-
-    public static void experience(int id){
-        
-        System.out.print("Enter company name you worked for -> ");
-        String cName=sc.nextLine();
-
-        System.out.print("Enter your job tittle / post -> ");
-        String job_name=sc.nextLine();
-
-        System.out.println("When you start your job (month / year)");
-        // temp_start_date=shortcut.selective_date();
-        // String start_date= temp_start_date.atDay(1).toString(); // Converts to 'YYYY-MM-DD'
-        YearMonth temp_start_date;
-        do {
-             temp_start_date=shortcut.selective_date();
-             
-            } while (temp_start_date==null);
-
-           String start_date = temp_start_date.atDay(1).toString();
-
-        System.out.println("When you leave your company (month / year)");
-        YearMonth temp_end_date;
-   // Converts to 'YYYY-MM-DD'
-
-     String end_date;
-        do {
-            System.out.println("Your date must be comes after starting date");
-            temp_end_date=shortcut.selective_date();
-            
-          
-        } while (temp_end_date==null || temp_end_date.isBefore(temp_start_date));
-         end_date= temp_end_date.atDay(1).toString();
-        
-        try{
-            String q1="insert into experience (id, cName, jobTittle, starts, ends) values (?,?,?,?,?)";
-            pst=jdbc.con.prepareStatement(q1);
-
-            pst.setInt(1, id);
-            pst.setString(2, cName);
-            pst.setString(3, job_name);
-            pst.setString(4, start_date);
-            pst.setString(5, end_date);
-
-            pst.executeUpdate();
-        }catch(Exception e){
-            System.out.println(e);
-            e.getStackTrace();
-        }
-        
-    }
-
-    public static void project(int id){
-        System.out.print("Enter name of your project -> ");
-        String pname=sc.nextLine();
-
-        System.out.print("Enter skills used in project -> ");
-        String pskills=sc.nextLine();
-
-        System.out.println("Enter short summary about your project ");
-        System.out.println(" -> ");
-        String psummary=sc.nextLine();
-
-        try{
-            String sql = "insert into project(id, pName, skills_used, summary) values(?,?,?,?)";
-            pst=jdbc.con.prepareStatement(sql);
-            
-            pst.setInt(1, id);
-            pst.setString(2, pname);
-            pst.setString(3, pskills);
-            pst.setString(4, psummary);
-
-            pst.executeUpdate();
-            // if(0==pst.executeUpdate()){
-            //     System.out.println("there was an error in adding project specific data");
-            // }
-
-        }catch(Exception e){
-            System.out.println("there was an error in adding project specific data");
-            System.out.println(e);
-            e.getStackTrace();
-        }
-
-    }
-
-    public static void acc() {
-       System.out.println("-----------------------");
-       System.out.println("1 -> login");
-       System.out.println("2 -> signup");
-       System.out.println("3 -> Back");
-
-       String selection = sc.nextLine();
-       int select=shortcut.changeformat(selection);
-
-        if(select==2){
-            int id = shortcut.generateradomnumber(6);
-            
-            System.out.println("-------------------------------------");
-            System.out.println(" CREATE PROFILE ");
-        int num= job_seaker.takingdetails(id);
-         if (num>0) {
-            System.out.println("-----------------------------------");
-            System.out.println("Your id -> "+ id);
-           System.out.println("Create password -> ");
-           String password=sc.nextLine();
-           
-           try{
-               String sqlquery="insert into js_acc values(?,?,?)";
-               pst=jdbc.con.prepareStatement(sqlquery);
-               pst.setInt(1, id);
-               pst.setString(2, password);
-               pst.setString(3, "seaker");
-               pst.executeUpdate();
-               
-               System.out.println("-------------------------------------");
-               System.out.println("Please remeber your information");
-               System.out.println("Your id is -> "+id);
-               System.out.println("your password is -> "+password);
-               
-            }catch(Exception e){
-                System.out.println(e);
-            }
-            System.out.println("--------------------------------------") ;         
-             System.out.println("YOU ARE PROFILE CREATED SUSCESSFULLY");
-             System.out.println("--------------------------------------");
-            
-            job_seaker.seekerInfo(id);
-         }
-         else{
-            System.out.println("Somthing Went Wrong !....");
-
-         }
-
-        }
-        else if(select==1){
-            // implement login method 
-            
-            System.out.print("Enter your id -> ");
-            int id=shortcut.changeformat(sc.nextLine());
-
-            System.out.print("Enter your password -> ");
-            String password=sc.nextLine();
-
-            try {
-                st=jdbc.con.createStatement();
-                rs=st.executeQuery("select pass from js_acc where id = "+id+" and role='seaker' ");
-                int tempnum2=0;
-                while (rs.next()) {
-                    String temp_pass = rs.getString("pass");
-                    if(temp_pass.equals(password)){
-                        tempnum2++;
-                    }
-                    // int temp_id = rs.getInt("id");
-                    // System.out.println(id) ;
-                    // System.out.println(password);
-                    // if(temp_id==id){
-                    //     tempnum2++;
-                    // }
-                }
-
-                if(tempnum2==0){
-                   System.out.println("Your id and password is not found");
-                   System.out.println("may be your password is incorrect");
-                   System.out.println("or your id does'nt exist");
-                   acc();
-                }else if(tempnum2==1){
-                    System.out.println("------------------------------");
-                    System.out.println("Logged in successfully");
-                    System.out.println("------------------------------");
-
-                    // change method their not seaker info , direct track application
-                    seekerInfo(id);
-                }
-                else{
-                   System.out.println("error");
-                   System.out.println("error in login job seaker account ");
-
-                }
-
-            }catch (Exception exception) {
-                System.out.println(exception);
-                System.out.println("PROBLEM IN CHECKING DETAILS");
-            }
-
-        }else if(select==3){
-
-        }
-        else{
-            System.out.println("Invalid selection");
-            acc();
-        }
-        
-       
-    }
-
-    public static void post2(int sno){
-        try {
-            // String query="select * from jobs"
-            st = jdbc.con.createStatement();
-            rs = st.executeQuery("select * from jobs where sno ="+sno);
-
-            while (rs.next()){
-                System.out.println("Company    -> "+ rs.getString("company"));
-                System.out.println("Job tittle -> "+ rs.getString("post"));
-                System.out.println("Timing     -> "+rs.getString("timing"));
-                System.out.println("location   -> "+rs.getString("location"));
-                System.out.println("Available post -> "+rs.getString("availablepost"));
-                System.out.println("Experience -> "+rs.getString("experience"));
-                System.out.println("Experience -> "+rs.getDate("Date"));
-                System.out.println(rs.getString("summary"));
-            }
-
-        }catch(Exception e){
-            System.out.println(e);        }
-    }
-
-    public static void trackApplication(int id){
-        try{
-            String query = "select j.company,j.post,a.status ,a.slot,a.Date from application a join jobs j on j.sno = a.job where a.id = "+id  ;
-            st=jdbc.con.createStatement();
-            rs=st.executeQuery(query);
-
-            while(rs.next()){
-                System.out.println("--------------------------------------------------");
-                System.out.printf("| %-10s | %-20s | %-10s|%-20s|%-15s |%n",
-                   rs.getString("j.company"), rs.getString("j.post"), rs.getString("a.status"),rs.getString("a.slot"),rs.getDate("a.Date") );
-                   System.out.println("--------------------------------------------------");
-            }
-
-        }catch(Exception e){
-            System.out.println("Error in recieving application details");
-            System.out.println(e);
-        }
-    }
-
-    public static void updateYourSelf(int id){
-        // int tempNum =0;
-        while(true){
-        System.out.println("What you want to update :-");
-        System.out.println("1 -> Name");
-        System.out.println("2 -> Mobile number");
-        System.out.println("3 -> Address");
-        System.out.println("4 -> Email Address");
-        System.out.println("5 -> Age");
-        System.out.println("6 -> Skill");
-        System.out.println("7 -> Back ");
-        int updateSelection = shortcut.changeformat(sc.nextLine());
-        System.out.println("--------------------------------------");
-
-        if(updateSelection==1){
-            System.out.print("Enter your Correct Name :- ");
-            String name = sc.nextLine();
-            shortcut.updating("name", name, id, "seaker_data");
-            
-        }else if(updateSelection==2){
-            System.out.println("Enter your correct/new mobile number :- ");
-
-            Long newMobileNumber = shortcut.phonenumbertaking();
-            shortcut.updating("mobile_no", newMobileNumber.toString(), id, "seaker_data");
-
-            // shortcut.updating("mobile_no", shortcut.phonenumbertaking().toString(), id, null);
-
-        }else if(updateSelection==3){
-            System.out.println("Enter your correct/new Address :- ");
-            shortcut.updating("address", sc.nextLine(), id, "seaker_data");
-            
-
-        }else if(updateSelection==4){
-            System.out.println("Enter your Email Address :- ");
-            String email = sc.nextLine();
-            email=email.replace(" ", "");
-            shortcut.updating("mail", email, id, "seaker_data");
-
-        }else if(updateSelection==5){
-            System.out.println("Enter your age ");
-            int age = shortcut.changeformat(sc.nextLine());
-            shortcut.updating("age", String.valueOf(age), id, "seaker_data");
-
-
-            // shortcut.updating("age", String.valueOf(shortcut.changeformat(sc.nextLine())), id, "seaker_data");
-
-
-        }else if(updateSelection==6){
-           System.out.println("You have to re enter all your skills");
-           System.out.println("Enter your skills :- ");
-        //    String st=sc.nextLine();
-           shortcut.updating("skills", sc.nextLine(), id, "seaker_data");
-        }
-        else if(updateSelection==7){
-            seekerInfo(id);
-            // tempNum++;
-            // continue;
-            return;
-        }
-        else{
-            System.out.println("Invalid selection");
-            // updateYourSelf(id);
-        }}
-        
-    }
-    public static void jj(int id ){
-        // ResumeUtils rt=new ResumeUtils( id);
-                        // rt.uploadResume(id);
-    }
-
+    
 }
+
 
 
 

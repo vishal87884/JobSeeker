@@ -24,6 +24,7 @@ availablepost int ,
 summary varchar(45) ,
 location varchar(45) ,
  experience varchar(45),
+ interview_Date date,
  createdBy int );
 ------------------------
 
@@ -62,7 +63,8 @@ create table js_acc(
 create table application(
     id int,
     job int ,
-    status  varchar(45)
+    status  varchar(45),
+    Date date
 );
 
 ----------------------------

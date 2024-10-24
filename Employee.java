@@ -14,7 +14,7 @@ public class Employee {
     static int empId;
     Employee(){
        
-        System.out.println("Enter 1:- For Add Job \nEnter 2:- For Manage Job\nEnter 3:- For Remove Jobs \nEnter 4:-  For manageApplications\nEnter Any Number For Back");
+        System.out.println("Enter 1:- For Add Job \nEnter 2:- For Manage Job\nEnter 3:- For Remove Jobs \nEnter 4:- For manageApplications\nEnter Any Number For Back");
         String n=s.nextLine();
         switch ((shortcut.changeformat(n))) {
                 case 1:
@@ -246,7 +246,12 @@ public class Employee {
         try {
             // Assume this method lists all jobs
             employee_posts(empId);
-            
+            System.out.println("Enter 1 For Back Any Number For Continue");
+            int no=shortcut.changeformat(s.nextLine());
+            if (no==1) {
+                new Employee();
+                return;
+            }
             System.out.println("Enter the serial number to update:");
             
             int sno = shortcut.changeformat(s.nextLine());  // Getting serial number
@@ -512,53 +517,40 @@ public class Employee {
     }
     }
 
-    public static void employee_posts(int empId) {  // Pass the empId as an argument
+public static void employee_posts(int empId) {  // Pass the empId as an argument
 
-        try {
-            // Prepare a query to select jobs created by the employee with the given empId
-            String query = "SELECT * FROM jobs WHERE createdBy = " + empId;
-            Statement st = jdbc.con.createStatement();
-            ResultSet rs = st.executeQuery(query);
-    
-            // Check if there are any jobs created by the employee
-            if (!rs.isBeforeFirst()) {
-                System.out.println("There is no job available at this time.");
-                return;
-            }
-    
-            // Loop through the result set and display job details in a poster format
-            while (rs.next()) {
-                System.out.println("===============================================================");
-                System.out.printf("| %-4s : %-50s |%n", "ID", rs.getString("sno"));
-                System.out.printf("| %-4s : %-50s |%n", "Company", rs.getString("company"));
-                System.out.printf("| %-4s : %-50s |%n", "Post", rs.getString("post"));
-                System.out.printf("| %-4s : %-50s |%n", "Timing", rs.getString("timing"));
-                System.out.printf("| %-4s : %-50s |%n", "Location", rs.getString("location"));
-                System.out.printf("| %-4s : %-50s |%n", "Date", rs.getDate("Date"));
-                System.out.printf("| %-4s : %-50s |%n", "Salary", rs.getString("salary"));
-                System.out.printf("| %-4s : %-50s |%n", "Available Posts", rs.getInt("availablepost"));
-                System.out.printf("| %-4s : %-50s |%n", "Summary", rs.getString("summary"));
-                System.out.printf("| %-4s : %-50s |%n", "Experience", rs.getString("experience"));
-                System.out.printf("| %-4s : %-50s |%n", "Interview Date", rs.getDate("interview_Date"));
-                System.out.println("===============================================================\n");
-            }
-    
-        } catch (Exception e) {
-            System.out.println("Error while receiving data.");
-            e.printStackTrace();
+    try {
+        // Prepare a query to select jobs created by the employee with the given empId
+        String query = "SELECT * FROM jobs WHERE createdBy = " + empId;
+        Statement st = jdbc.con.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        // Check if there are any jobs created by the employee
+        if (!rs.isBeforeFirst()) {
+            System.out.println("There is no job available at this time.");
+            return;
         }
+
+        // Loop through the result set and display job details in a poster format
+        while (rs.next()) {
+            System.out.println("===============================================================");
+            System.out.printf("| %-4s : %-50s |%n", "ID", rs.getString("sno"));
+            System.out.printf("| %-4s : %-50s |%n", "Company", rs.getString("company"));
+            System.out.printf("| %-4s : %-50s |%n", "Post", rs.getString("post"));
+            System.out.printf("| %-4s : %-50s |%n", "Timing", rs.getString("timing"));
+            System.out.printf("| %-4s : %-50s |%n", "Location", rs.getString("location"));
+            System.out.printf("| %-4s : %-50s |%n", "Date", rs.getDate("Date"));
+            System.out.printf("| %-4s : %-50s |%n", "Salary", rs.getString("salary"));
+            System.out.printf("| %-4s : %-50s |%n", "Available Posts", rs.getInt("availablepost"));
+            System.out.printf("| %-4s : %-50s |%n", "Summary", rs.getString("summary"));
+            System.out.printf("| %-4s : %-50s |%n", "Experience", rs.getString("experience"));
+            System.out.printf("| %-4s : %-50s |%n", "Interview Date", rs.getDate("interview_Date"));
+            System.out.println("===============================================================\n");
+        }
+
+    } catch (Exception e) {
+        System.out.println("Error while receiving data.");
+        e.printStackTrace();
     }
-    
-    
-
-    
+} 
 }
-
-
-
-
-
-
-
-
-

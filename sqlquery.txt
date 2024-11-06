@@ -56,7 +56,8 @@ CREATE TABLE pdf_files (
 create table js_acc(
 	id int primary key,
     pass varchar(255) ,
-    role varchar(45));
+    role varchar(45)
+    id_status varchar(45));
 
 ---------------------------
 

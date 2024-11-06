@@ -29,7 +29,7 @@ public class Admin {
         } else if (choice == 2) {
             manageUser();
         } else if (choice == 3) {
-           AnalyticsReportPDF.main(null);
+          AnalyticsReportPDF.main(null);
         } else if (choice == 4) {
 
         } else {
@@ -160,7 +160,7 @@ public class Admin {
 
         try {
             pst = jdbc.con.prepareStatement(
-                    "INSERT INTO `jobportal`.`details` (`id`, `name`, `mobile_no`, `gmail`, `mail`,`role`) VALUES (?,?,?,?,?,?)");
+                    "INSERT INTO jobportal.details (id, name, mobile_no, gmail, mail,role) VALUES (?,?,?,?,?,?)");
 
             pst.setInt(1, id);
             pst.setString(2, name);
@@ -223,7 +223,7 @@ public class Admin {
             // ResultSet rs = st.executeQuery(sql);
             // while (rs.next()==true) {
 
-            // System.out.println("_______________________________________________________________");
+            // System.out.println("_____________________");
             // // System.out.printf("|
             // %-60s|%n","-------------------------------------------------------------");
             // // System.out.printf("| %-60s |%n","Serial number -> "+rs.getString("sno"));
@@ -245,7 +245,7 @@ public class Admin {
 
             // //
             // System.out.println("-------------------------------------------------------------");
-            // System.out.printf("|%-60s|%n","______________________________________________________________");
+            // System.out.printf("|%-60s|%n","______________________");
             // System.out.println();
             // }
 

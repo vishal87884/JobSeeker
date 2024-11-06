@@ -253,54 +253,50 @@ public class job_seaker {
             seaker(id);
         }
     }
-
     public static int takingdetails(int id) {
-        
-
-        System.out.println("-----------ENTER  YOUR PERSONAL DETAILS -----------");
+        System.out.println("-----------ENTER YOUR PERSONAL DETAILS -----------");
+    
         System.out.print("Enter your name -> ");
         String name = shortcut.nameFormating();
+    
         System.out.print("Enter your mobile number -> ");
-        // long number=sc.nextLong(10);       
-         long phonenumber = shortcut.phonenumbertaking();
+        long phonenumber = shortcut.phonenumbertaking();
+    
         System.out.print("Enter your mail id -> ");
         String mail = sc.nextLine();
+    
         System.out.print("Enter your age -> ");
         int age = shortcut.changeformat(sc.nextLine());
+    
         System.out.print("Enter your Address -> ");
         String address = sc.nextLine();
-        System.out.println("use (,) for differientiate language");
-        System.out.println("Don't use space");
+    
+        System.out.println("Use (,) to differentiate languages, no spaces.");
         System.out.print("Enter your Skills -> ");
-        String skills = sc.nextLine();
-        skills=skills.replace(" ", "");
-       
-
-        System.out.println("Do you have any experience");
-        System.out.print("1 -> Yes \nany other number -> No");
-        System.out.print(" -> ");
-        int experience_selection = shortcut.changeformat(sc.nextLine());
-        if (experience_selection == 1) {
-            // experience taken
-            // with ref of id
-            experience(id);
+        String skills = sc.nextLine().replace(" ", "");
+    
+        System.out.println("Do you have any experience?");
+        System.out.print("1 -> Yes \nAny other number -> No\n-> ");
+        int experienceSelection = shortcut.changeformat(sc.nextLine());
+    
+        if (experienceSelection == 1) {
+            experience(id);  // Call to collect experience details
         }
-
-        System.out.println("had you done any project yet! ");
-        System.out.print("1 -> Yes \nany other number -> No");
-        System.out.print(" -> ");
-        int project_select = shortcut.changeformat(sc.nextLine());
-        if (project_select == 1) {
-            // project taking method
-            // with ref of id
-            project(id);
-
+    
+        System.out.println("Have you completed any projects?");
+        System.out.print("1 -> Yes \nAny other number -> No\n-> ");
+        int projectSelect = shortcut.changeformat(sc.nextLine());
+    
+        if (projectSelect == 1) {
+            project(id);  // Call to collect project details
         }
-
-        String sql2 = "insert into seaker_data(id, name, mobile_no, mail, age, skills, address, experienced, project, date) values( ?,?, ?,?,?,?,?,?,?, current_date())";
+    
+        String sql = "INSERT INTO seaker_data(id, name, mobile_no, mail, age, skills, address, experienced, project, date) " +
+                     "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, current_date())";
+    
         try {
-            pst = jdbc.con.prepareStatement(sql2);
-
+            pst = jdbc.con.prepareStatement(sql);
+    
             pst.setInt(1, id);
             pst.setString(2, name);
             pst.setLong(3, phonenumber);
@@ -308,32 +304,17 @@ public class job_seaker {
             pst.setInt(5, age);
             pst.setString(6, skills);
             pst.setString(7, address);
-            // pst.setString(6, );
-            if (experience_selection == 1) {
-                pst.setString(8, "yes");
-            } else {
-                pst.setString(8, "no");
-            }
-
-            if (project_select == 1) {
-                pst.setString(9, "yes");
-            } else {
-                pst.setString(9, "no");
-            }
-           
-           return pst.executeUpdate();
-           
-        }
-        
-        catch (Exception e) {
-            System.out.println(e);
-            System.out.println(e.getMessage());
-            e.getStackTrace();
-            System.exit(0);
+            pst.setString(8, experienceSelection == 1 ? "yes" : "no");
+            pst.setString(9, projectSelect == 1 ? "yes" : "no");
+    
+            return pst.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error inserting data: " + e.getMessage());
+            e.printStackTrace();
             return 0;
         }
-        // job_seaker.seekerInfo(id);
     }
+    
 
     public static void experience(int id){
         
@@ -433,6 +414,7 @@ public class job_seaker {
             System.out.println("-------------------------------------");
             System.out.println(" CREATE PROFILE ");
         int num= job_seaker.takingdetails(id);
+        System.out.println("checking nummmmm"+num);
          if (num>0) {
             System.out.println("-----------------------------------");
             System.out.println("Your id -> "+ id);
@@ -453,14 +435,15 @@ public class job_seaker {
                System.out.println("Your id is -> "+id);
                System.out.println("your password is -> "+password);
                
+               System.out.println("--------------------------------------") ;         
+                System.out.println("YOU ARE PROFILE CREATED SUSCESSFULLY");
+                System.out.println("--------------------------------------");
+               
+               job_seaker.seekerInfo(id);
             }catch(Exception e){
                 System.out.println(e);
+                System.out.println("Unable to create profile of yours ");
             }
-            System.out.println("--------------------------------------") ;         
-             System.out.println("YOU ARE PROFILE CREATED SUSCESSFULLY");
-             System.out.println("--------------------------------------");
-            
-            job_seaker.seekerInfo(id);
          }
          else{
             System.out.println("Somthing Went Wrong !....");
@@ -607,7 +590,8 @@ public class job_seaker {
             email=email.replace(" ", "");
             shortcut.updating("mail", email, id, "seaker_data");
 
-        }else if(updateSelection==5){
+        }
+        else if(updateSelection==5){
             System.out.println("Enter your age ");
             int age = shortcut.changeformat(sc.nextLine());
             shortcut.updating("age", String.valueOf(age), id, "seaker_data");
@@ -624,6 +608,7 @@ public class job_seaker {
         }
         else if(updateSelection==7){
             seekerInfo(id);
+
             // tempNum++;
             // continue;
             return;

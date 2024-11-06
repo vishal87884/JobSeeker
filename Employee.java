@@ -15,7 +15,6 @@ public class Employee {
     Employee(){
        
         System.out.println("Enter 1:- For Add Job \nEnter 2:- For Manage Job\nEnter 3:- For Remove Jobs \nEnter 4:- For manageApplications\nEnter Any Number For Back");
-        System.out.println("Enter 1:- For Add Job \nEnter 2:- For Manage Job\nEnter 3:- For Remove Jobs \nEnter 4:- For manageApplications\nEnter Any Number For Back");
         String n=s.nextLine();
         switch ((shortcut.changeformat(n))) {
                 case 1:
@@ -247,12 +246,6 @@ public class Employee {
         try {
             // Assume this method lists all jobs
             employee_posts(empId);
-            System.out.println("Enter 1 For Back Any Number For Continue");
-            int no=shortcut.changeformat(s.nextLine());
-            if (no==1) {
-                new Employee();
-                return;
-            }
             System.out.println("Enter 1 For Back Any Number For Continue");
             int no=shortcut.changeformat(s.nextLine());
             if (no==1) {
@@ -524,7 +517,6 @@ public class Employee {
     }
     }
 
-public static void employee_posts(int empId) {  // Pass the empId as an argument
 public static void employee_posts(int empId) {  // Pass the empId as an argument
 
     try {

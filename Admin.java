@@ -29,7 +29,7 @@ public class Admin {
         } else if (choice == 2) {
             manageUser();
         } else if (choice == 3) {
-
+           AnalyticsReportPDF.main(null);
         } else if (choice == 4) {
 
         } else {

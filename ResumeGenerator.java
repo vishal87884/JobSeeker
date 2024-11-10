@@ -2,7 +2,6 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import java.io.*;
 import java.sql.*;
-import java.util.regex.Pattern;
 import java.awt.Desktop;
 import java.util.*;
 

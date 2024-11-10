@@ -105,7 +105,7 @@ public class job_seaker {
     public static void posts() {
 
         try {
-            // String query="select * from jobs"
+       // String query="select * from jobs"     
             st = jdbc.con.createStatement();
             rs = st.executeQuery("select * from jobs");
             // System.out.println(rs.next());
@@ -180,22 +180,21 @@ public class job_seaker {
     public static void seaker(int id) {
         System.out.println("AVAILABLE POSTS ARE SHOWN BELOW ");
         System.out.println();
-
-        // call post method so all of post are shown
-        
+    
+        // Call post method so all posts are shown
         posts();
-
+    
         System.out.println("ENTER SERIAL NUMBER FOR SELECT POST ");
         System.out.println("PRESS -1 FOR MAIN MENU");
-
+    
         String temp_selected = sc.nextLine();
         int select = 0;
-
+    
         try {
             select = Integer.parseInt(temp_selected);
             st = jdbc.con.createStatement();
             rs = st.executeQuery("select sno from jobs");
-
+    
             int temp = 0;
             while (rs.next()) {
                 if (rs.getInt("sno") == select) {
@@ -203,57 +202,63 @@ public class job_seaker {
                 }
             }
             if (temp == 0 && select != -1) {
-                // String tempString = "kk";
-                // int tempp = Integer.parseInt(tempString);
                 throw new Exception("Invalid selection exception");
             } else {
-               if(temp==1){
-                //next step
-                //sout summary of selected job
-                post2(select);
-                System.out.println("------------------------------");
-                System.out.println("1 -> Apply for this job");
-                System.out.println("Back Menu - press any number");
-                int sel=shortcut.changeformat(sc.nextLine());
-                if(sel==1){
-                    // apply
-                    // System.out.println("applied");
-
-                    try{
-                        pst=jdbc.con.prepareStatement("insert into application (id, job,status) values (?,?,?)");
-                        pst.setInt(1, id);
-                        pst.setInt(2, select);
-                        pst.setString(3, "pending");
-                        int result = pst.executeUpdate();
-                        if(result==1){
-                            System.out.println("Applied succefully");
-                            seekerInfo(id);
-                        }else{
-                            System.out.println("Unable to apply");
+                if (temp == 1) {
+                    // Next step
+                    // Display summary of selected job
+                    post2(select);
+                    System.out.println("------------------------------");
+                    System.out.println("1 -> Apply for this job");
+                    System.out.println("Back Menu - press any number");
+                    int sel = shortcut.changeformat(sc.nextLine());
+    
+                    if (sel == 1) {
+                        // Check if the user has already applied for this job
+                        try {
+                            pst = jdbc.con.prepareStatement("select count(*) from application where id = ? and job = ?");
+                            pst.setInt(1, id);
+                            pst.setInt(2, select);
+                            ResultSet rsCheck = pst.executeQuery();
+                            rsCheck.next();
+                            int alreadyApplied = rsCheck.getInt(1);
+    
+                            if (alreadyApplied > 0) {
+                                System.out.println("You have already applied for this job.");
+                                seekerInfo(id);
+                            } else {
+                                // Proceed to apply for the job
+                                pst = jdbc.con.prepareStatement("insert into application (id, job, status) values (?, ?, ?)");
+                                pst.setInt(1, id);
+                                pst.setInt(2, select);
+                                pst.setString(3, "pending");
+                                int result = pst.executeUpdate();
+                                if (result == 1) {
+                                    System.out.println("Applied successfully");
+                                    seekerInfo(id);
+                                } else {
+                                    System.out.println("Unable to apply");
+                                }
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e);
                         }
-
-                    }catch(Exception e ){
-                        System.out.println(e);
+                    } else {
+                        seekerInfo(id);
                     }
-                }else{
+                } else if (select == -1) {
+                    // Back button
                     seekerInfo(id);
                 }
-
-
-
-               }else if(select==-1){
-                // back button
-                // System.out.println("back");
-                 // just fr testing
-                 seekerInfo(id);
-               }
             }
-
         } catch (Exception e) {
             System.out.println("Enter valid selection");
             seaker(id);
         }
     }
+     
+
+    
     public static int takingdetails(int id) {
         System.out.println("-----------ENTER YOUR PERSONAL DETAILS -----------");
 

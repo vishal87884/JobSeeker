@@ -2,7 +2,6 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import java.io.*;
 import java.sql.*;
-import java.util.regex.Pattern;
 import java.awt.Desktop;
 import java.util.*;
 
@@ -22,7 +21,6 @@ public class ResumeGenerator1 {
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
             document.add(new Paragraph("\n"));
-
             // Creating table for contact information
             PdfPTable contactTable = new PdfPTable(2);
             contactTable.setWidthPercentage(100);

@@ -33,9 +33,10 @@
         }
     
         private static boolean validateLogin(String id, String password) {
-            try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jobportal", "root", "735403")) {
+            try {
+                // Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jobportal", "root", "735403")) {
                 String sql = "SELECT * FROM js_acc WHERE id = ? AND pass = ? AND role = ?";
-                pst = con.prepareStatement(sql);
+                pst = jdbc.con.prepareStatement(sql);
                 pst.setString(1, id);
                 pst.setString(2, password);
                 pst.setString(3, "admin");
@@ -210,7 +211,6 @@
                     System.out.println(e);
                 }
             }
-            manageUser();
         }
     
         public static void viewUsers() {

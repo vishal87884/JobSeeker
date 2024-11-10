@@ -23,14 +23,18 @@ public class shortcut {
         if (st.matches("0")) {
             System.out.println("Exiting...");
             job_seaker.acc();
-
         }
-        try{return Integer.parseInt(st);}
+        try{
+            int tempnummmm= Integer.parseInt(st);
+            repeatcount=0;
+            return tempnummmm;    
+        }
         catch(Exception e){
-            System.out.print("Do not enter invalid");
+            repeat();
+            System.out.println("Do not enter invalid");
             System.out.print("Re-enter -> "); 
-            changeformat(scanner.nextLine());
-            return 0;
+            
+            return changeformat(scanner.nextLine());
         }
     }
 
@@ -42,28 +46,33 @@ public class shortcut {
         phone_no_string = phone_no_string.replace(" ", "");
         if (phone_no_string.matches("0")) {
             System.out.println("Exiting....");
-job_seaker.acc();
+            job_seaker.acc();
         }
         for (int i = 0; i < phone_no_string.length(); i++) {
             if (phone_no_string.charAt(i) >= 'a' && phone_no_string.charAt(i) <= 'z') {
+                repeat();
                 System.out.println("--- INVLID FORMAT ---");
                 System.out.print("PLEASE ENTER CORRECT MOBILE NUMBER -> ");
                 phonenumbertaking();
                 break;
             } else if (phone_no_string.length() != 10) {
+                repeat();
                 System.out.println("---YOU ENETERED INNCORRECT NUMBER---");
                 System.out.print("PLEASE ENTER CORRECT 10 DIGIT MOBILE NUMBER -> ");
                 phonenumbertaking();
                 break;
             } else if (phone_no_string.length() == 10) {
                 if ((phone_no_string.charAt(0) >= '0' && phone_no_string.charAt(0) <= '5')) {
+                    repeat();
                     System.out.print("PLEASE ENTER A VALID INDIAN NUMBER -> ");
                     phonenumbertaking();
                     break;
+                }else{
+                    repeatcount=0;
+                    phonenoo = Long.parseLong(phone_no_string);
+                    return phonenoo;
                 }
                 // long realphonenumber = Long.parseLong(phone_no_string);
-                phonenoo = Long.parseLong(phone_no_string);
-                return phonenoo;
             }
         }
         return phonenoo;
@@ -126,6 +135,7 @@ job_seaker.acc();
             // Check if the input is valid (contains only letters and spaces)
             if (n1.matches("[a-z  A-Z\\s]+")) {
                 // System.out.println("Name entered successfully: " );
+                repeatcount=0;
                 break;
             }
             if(n1.matches("0")){
@@ -134,6 +144,7 @@ job_seaker.acc();
             
             }
             else {
+                repeat();
                 System.out.println("Invalid input. Please enter a valid name (letters and spaces only).");
             }
 
@@ -222,8 +233,14 @@ job_seaker.acc();
     
                 // Check if age is within the valid range
                 if (age >= 18 && age <= 60) {
+                    repeatcount=0;
                     valid = true; // Exit the loop if the age is valid
-                } else {
+                
+                }else if(age==0){
+                    job_seaker.acc();
+                } 
+                else {
+                    repeat();
                     System.out.println("Invalid age. Age must be between 18 and 60.");
                     System.out.println("1 -> Try again");
                     System.out.println("2 -> Back to main menu");
@@ -238,6 +255,7 @@ job_seaker.acc();
                 }
     
             } catch (NumberFormatException e) {
+                repeat();
                 System.out.println("Invalid input. Please enter a valid number.");
                 System.out.println("1 -> Try again");
                 System.out.println("2 -> Back to main menu");
@@ -310,8 +328,10 @@ job_seaker.acc();
         boolean isCorrect = EMAIL_PATTERN.matcher(email).matches();
 
         if((isCorrect==true) && (email.endsWith(condition2) || email.endsWith(condition1)) ){
+                repeatcount=0;
                 return email;
         }else{
+            repeat();
             System.out.println("You entered email is invalid");
             System.out.println("1. Re - try");
             System.out.println("2. Cancel form");
@@ -326,6 +346,16 @@ job_seaker.acc();
        }
 
     }
-  
+    
+    static int repeatcount=0;
+    public static void repeat(){
+        if(repeatcount<2){
+            repeatcount++;
+        }else{
+            System.out.println("You entered invalid data too many times");
+            repeatcount=0;
+            Main.mainwork();
+        }
+    }
   
 }

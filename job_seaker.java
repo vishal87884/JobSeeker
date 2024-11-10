@@ -40,16 +40,26 @@ public class job_seaker {
 
                 
                     if(choice==1){
-                        // System.out.println("UPLODE YOUR");
-                        // // seekerInfo(id);
-                        // System.out.println("01");
-
-                        // seekerInfo(id);
-                        // String [] tempString=new String[1];
-                        // tempString[0]= ""+id+"";
-                        // ResumeUtils.main(tempString);
-                        // ResumeUtils.uploadResume(id);
-                        
+                        System.out.println("Do you want to uplode resume ");
+                        System.out.println("1 -> yes \n2 -> no");
+                        if(shortcut.changeformat(sc.nextLine())==1){
+                            try{
+                                String query = "UPDATE seaker_data SET resume = 'yes' WHERE id = ?";
+                                PreparedStatement pst = jdbc.con.prepareStatement(query);
+                                pst.setInt(1, id);
+                                int rowsUpdated = pst.executeUpdate();
+                                if (rowsUpdated > 0) {
+                                    System.out.println("Resume updated successfully.");
+                                } else {
+                                    System.out.println("Job seeker not found.");
+                                }
+                            }catch(Exception e){
+                                System.out.println("error in 49 in job seaker");
+                            }
+                        }else{
+                            System.out.println("Sure ! no problem");
+                            seekerInfo(id);
+                        }
                     }
                     else if(choice==2){
                         // System.out.println("APPLY FOR JOBS.");
@@ -264,7 +274,7 @@ public class job_seaker {
         System.out.println("0->Back");
         System.out.print("Enter your name -> ");
         String name = shortcut.nameFormating();
-      
+        
     System.out.println("0->Back");
         System.out.print("Enter your mobile number -> ");
         long phonenumber = shortcut.phonenumbertaking();
@@ -272,7 +282,7 @@ public class job_seaker {
         System.out.println("0->Back");
         // System.out.print("Enter your mail id -> ");
         String mail = shortcut.validMailTaking();
-        System.out.println("1->Back");
+        System.out.println("0->Back");
 
         System.out.print("Enter your age -> ");
         int age = shortcut.ageCheck();
@@ -484,19 +494,22 @@ public class job_seaker {
 
             try {
                 st=jdbc.con.createStatement();
-                rs=st.executeQuery("select pass from js_acc where id = "+id+" and role='seaker' ");
+                rs=st.executeQuery("select pass,id_status from js_acc where id = "+id+" and role='seaker' ");
                 int tempnum2=0;
+                String status="";
                 while (rs.next()) {
+                    status=rs.getString("id_status");
                     String temp_pass = rs.getString("pass");
+
                     if(temp_pass.equals(password)){
-                        tempnum2++;
+                        if(status.equals("ACTIVE")){
+                            tempnum2++;
+                        }
+                        if(status.equals("BLOCK")){
+                            tempnum2= -5;
+                        }
                     }
-                    // int temp_id = rs.getInt("id");
-                    // System.out.println(id) ;
-                    // System.out.println(password);
-                    // if(temp_id==id){
-                    //     tempnum2++;
-                    // }
+                    
                 }
 
                 if(tempnum2==0){
@@ -504,7 +517,12 @@ public class job_seaker {
                    System.out.println("may be your password is incorrect");
                    System.out.println("or your id does'nt exist");
                    acc();
-                }else if(tempnum2==1){
+                }else if(tempnum2== -5){
+                    System.out.println("------------------------------");
+                    System.out.println("You are susspended or block");
+                    System.out.println("-------------------------------");
+                }
+                else if(tempnum2==1){
                     System.out.println("------------------------------");
                     System.out.println("Logged in successfully");
                     System.out.println("------------------------------");
@@ -524,7 +542,7 @@ public class job_seaker {
             }
 
         }else if(select==3){
-Main.main(null);
+            Main.mainwork();
         }
         else{
             System.out.println("Invalid selection");

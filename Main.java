@@ -7,10 +7,7 @@ public class Main {
     static int id=0;
     static String password="";
 
-    public static void main(String[] args) {
-          
-        startHook();
-        // System.out.println(jdbc.con);
+    public static void mainwork(){
         Scanner scanner = new Scanner(System.in);
        
         while (true) {
@@ -24,20 +21,19 @@ public class Main {
             // System.out.println("5 - Exit");
             System.out.print("Enter your choice: ");
 
-            if (scanner.hasNextInt()) {
                 int choice = shortcut.changeformat(scanner.nextLine()) ;
                 System.out.println("------------------------");
 
 
-                switch (choice) {
-                    case 1:
+                    if(choice==1){
                         System.out.println("Admin selected.");
 
                         // Call Admin class/methods
                       Admin.loginAdmin();
-                        Admin admin=new Admin();
-                        break;
-                    case 2:
+                        // Admin admin=new Admin();
+                     }
+                    else if(choice==2){
+
                         System.out.println("Employ selected.");
                         // Employee em = new Employee();
                         // em.mainWorkEmployee();
@@ -52,35 +48,40 @@ public class Main {
                         }else if(selection==2){
                             Employee.employeeLogin();
                         }else if(selection==3){
-                            main(args);
-
-
+                            mainwork();
                         }else{
                             System.out.println("--------------------------");
                             System.out.println("Invalid selection");
                         }
+                    }
 
-                        break;
-                    case 3:
+                    else if(choice==3){
+
                         System.out.println("Job Seeker selected.");
                         // Call Job Seeker class/methods
                         // job_seaker.seaker();
-                       job_seaker.acc();
+                        job_seaker.acc();
                         // job_seaker.takingdetails();
-                        break;
-                    case 4:
+                    }
+                    else if(choice==4){
+
                         System.out.println("Exiting...");
                         scanner.close(); // Close the scanner before exiting
                         System.exit(0);
-                    default:
-                        System.out.println("Invalid choice. Please enter a number between 1 and 5.");
-                        break;
-                }
-            } else {
-                System.out.println("Invalid input. Please enter a valid number.");
-                scanner.next(); // Clear the invalid input
-            }
+                    }
+                   else{
+
+                       System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+                       break;
+                    }
+                
         }
+    }
+    public static void main(String[] args) {
+          
+        startHook();
+        mainwork();
+        
     }
 
     public static void startHook(){

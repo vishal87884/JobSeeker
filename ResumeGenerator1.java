@@ -3,10 +3,12 @@ import com.itextpdf.text.pdf.*;
 import java.io.*;
 import java.sql.*;
 import java.awt.Desktop;
-import java.util.*;
+// import java.util.*;
 
 public class ResumeGenerator1 {
 
+    
+    static Connection con = jdbc.con;
     public static void generateResume(String name, String email, String phone, String address, String experience, String education, String projects, String skills) {
         Document document = new Document();
         String pdfFilePath = name + "_Resume.pdf";
@@ -57,9 +59,9 @@ public class ResumeGenerator1 {
             document.add(new Paragraph(experience));
             document.add(new Paragraph("\n"));
 
-            document.add(new Paragraph("Education", sectionFont));
-            document.add(new Paragraph(education));
-            document.add(new Paragraph("\n"));
+            // document.add(new Paragraph("Education", sectionFont));
+            // document.add(new Paragraph(education));
+            // document.add(new Paragraph("\n"));
 
             document.add(new Paragraph("Projects", sectionFont));
             document.add(new Paragraph(projects));
@@ -71,7 +73,7 @@ public class ResumeGenerator1 {
 
             System.out.println("Resume PDF created successfully!");
 
-            saveResumeToDatabase(name, email, phone, address, experience, education, projects, skills, pdfFilePath);
+            // saveResumeToDatabase(name, email, phone, address, experience, education, projects, skills, pdfFilePath);
 
             openPDF(pdfFilePath);
 
@@ -92,7 +94,7 @@ public class ResumeGenerator1 {
         String projects = "";
         String skills = "";
 
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jobportal", "root", "735403")) {
+        try {
             // Fetch seeker details
             PreparedStatement seekerStmt = con.prepareStatement("SELECT * FROM seaker_data WHERE id = ?");
             seekerStmt.setInt(1, seekerId);
@@ -138,29 +140,29 @@ public class ResumeGenerator1 {
         }
     }
 
-    private static void saveResumeToDatabase(String name, String email, String phone, String address, String experience, String education, String projects, String skills, String pdfFilePath) {
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/jobportal", "root", "735403");
-             PreparedStatement pstmt = con.prepareStatement("INSERT INTO resume (name, email, phone, address, experience, education, projects, skills, resume_pdf) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+    // private static void saveResumeToDatabase(String name, String email, String phone, String address, String experience, String education, String projects, String skills, String pdfFilePath) {
+    //     try (
+    //          PreparedStatement pstmt = con.prepareStatement("INSERT INTO resume (name, email, phone, address, experience, education, projects, skills, resume_pdf) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-            pstmt.setString(1, name);
-            pstmt.setString(2, email);
-            pstmt.setString(3, phone);
-            pstmt.setString(4, address);
-            pstmt.setString(5, experience);
-            pstmt.setString(6, education);
-            pstmt.setString(7, projects);
-            pstmt.setString(8, skills);
+    //         pstmt.setString(1, name);
+    //         pstmt.setString(2, email);
+    //         pstmt.setString(3, phone);
+    //         pstmt.setString(4, address);
+    //         pstmt.setString(5, experience);
+    //         pstmt.setString(6, education);
+    //         pstmt.setString(7, projects);
+    //         pstmt.setString(8, skills);
 
-            try (FileInputStream fis = new FileInputStream(pdfFilePath)) {
-                pstmt.setBinaryStream(9, fis, (int) new File(pdfFilePath).length());
-                pstmt.executeUpdate();
-                System.out.println("Resume saved in database successfully!");
-            }
+    //         try (FileInputStream fis = new FileInputStream(pdfFilePath)) {
+    //             pstmt.setBinaryStream(9, fis, (int) new File(pdfFilePath).length());
+    //             pstmt.executeUpdate();
+    //             System.out.println("Resume saved in database successfully!");
+    //         }
 
-        } catch (Exception e) {
-            System.out.println("Error saving resume to database: " + e.getMessage());
-        }
-    }
+    //     } catch (Exception e) {
+    //         System.out.println("Error saving resume to database: " + e.getMessage());
+    //     }
+    // }
 
     private static void openPDF(String pdfFilePath) {
         try {
@@ -180,12 +182,13 @@ public class ResumeGenerator1 {
         }
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    // public static void main(String[] args) {
+    //     // Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter Seeker ID: ");
-        int seekerId = scanner.nextInt();
-
-        fetchAndGenerateResume(seekerId);
-    }
+    //     System.out.print("Enter Seeker ID: ");
+    //     // int seekerId = scanner.nextInt();
+    //     jdbc.connection();
+    //     con=jdbc.con;
+    //     fetchAndGenerateResume(881683);
+    // }
 }

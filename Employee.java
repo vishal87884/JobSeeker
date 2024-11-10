@@ -106,7 +106,12 @@ public class Employee {
                     if (!candidateIds.contains(selectedCandidateId)) {
                         System.out.println("Invalid Candidate ID. Exiting...");
                         return;
-                    }
+                    }else{
+
+                        System.out.println("Show resume \n1 -> yes \n2 -> no");
+                        if(shortcut.changeformat(s.nextLine())==1){
+                            ResumeGenerator1.fetchAndGenerateResume(selectedCandidateId);
+                        }
     
                     // Ask for a new status for the selected candidate
                     String newStatus = "";
@@ -199,7 +204,7 @@ public class Employee {
                         }
                     }
                     
-                }
+                }}
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -472,10 +477,12 @@ public class Employee {
 
         try {
             Statement st=jdbc.con.createStatement();
-            rs=st.executeQuery("select pass from js_acc where id = "+tempId+" and role = 'employee'");
+            rs=st.executeQuery("select pass,id_status from js_acc where id = "+tempId+" and role = 'employee'");
             int tempnum2=0;
+            String status="";
             while (rs.next()) {
                 String temp_pass = rs.getString("pass");
+                status=rs.getString("id_status");
                 if(temp_pass.equals(password)){
                     tempnum2++;
                 }
@@ -487,13 +494,17 @@ public class Employee {
                System.out.println("or your id does'nt exist");
             //   employeeLogin();
             }else if(tempnum2==1){
-                System.out.println("------------------------------");
-                System.out.println("Logged in successfully");
-                System.out.println("------------------------------");
-                empId=tempId;
-               // run 
-               new Employee();
-               return;
+            
+                // System.out.println("------------------------------");
+                // System.out.println("Logged in successfully");
+                // System.out.println("------------------------------");
+                if(status.equals("ACTIVE")){
+                    empId=tempId;
+                   new Employee();
+                   return;
+                }else if(status.equals("BLOCK")){
+                    System.out.println("You are suspended or blocked");
+                }
             }
             else{
                System.out.println("error");

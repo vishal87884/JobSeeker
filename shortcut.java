@@ -209,7 +209,91 @@ job_seaker.acc();
             e.printStackTrace();
         }
     }
-
+    public static int ageCheck() {
+        int age = 0;
+        boolean valid = false;
+    
+        while (!valid) {
+            System.out.println("Please enter your age (18-60): ");
+            String input = scanner.nextLine();
+    
+            try {
+                age = Integer.parseInt(input);
+    
+                // Check if age is within the valid range
+                if (age >= 18 && age <= 60) {
+                    valid = true; // Exit the loop if the age is valid
+                } else {
+                    System.out.println("Invalid age. Age must be between 18 and 60.");
+                    System.out.println("1 -> Try again");
+                    System.out.println("2 -> Back to main menu");
+                    System.out.print("Choose an option: ");
+                    
+                    String option = scanner.nextLine();
+                    
+                    if (option.equals("2")) {
+                        System.out.println("Returning to main menu...");
+                        return -1; // Use -1 to indicate going back to main menu
+                    }
+                }
+    
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                System.out.println("1 -> Try again");
+                System.out.println("2 -> Back to main menu");
+                System.out.print("Choose an option: ");
+                
+                String option = scanner.nextLine();
+                
+                if (option.equals("2")) {
+                    System.out.println("Returning to main menu...");
+                    return -1; // Use -1 to indicate going back to main menu
+                }
+            }
+        }
+    
+        return age; // Return the valid age
+    }
+    public static String passwordCheck() {
+        boolean valid = false;
+        String password = "";
+    
+        while (!valid) {
+            System.out.println("Enter password (must contain alphabet, number, special character, and be 6-12 characters long): ");
+            password = scanner.nextLine();
+    
+            // Check length
+            if (password.length() < 6 || password.length() > 12) {
+                System.out.println("Password length must be between 6 and 12 characters.");
+                continue;
+            }
+    
+            // Check for required character types
+            boolean hasLetter = false;
+            boolean hasDigit = false;
+            boolean hasSpecialChar = false;
+    
+            for (char ch : password.toCharArray()) {
+                if (Character.isLetter(ch)) {
+                    hasLetter = true;
+                } else if (Character.isDigit(ch)) {
+                    hasDigit = true;
+                } else if (!Character.isLetterOrDigit(ch)) {
+                    hasSpecialChar = true;
+                }
+            }
+    
+            // Validate all conditions
+            if (hasLetter && hasDigit && hasSpecialChar) {
+                valid = true; // Password is valid
+            } else {
+                System.out.println("Password must contain at least one letter, one number, and one special character.");
+            }
+        }
+    
+        return password; // Return the valid password
+    }
+    
     public static String validMailTaking(){
         String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);

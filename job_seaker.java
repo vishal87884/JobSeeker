@@ -257,7 +257,6 @@ public class job_seaker {
         }
     }
      
-
     
     public static int takingdetails(int id) {
         System.out.println("-----------ENTER YOUR PERSONAL DETAILS -----------");
@@ -276,8 +275,9 @@ public class job_seaker {
         System.out.println("1->Back");
 
         System.out.print("Enter your age -> ");
-        int age = shortcut.changeformat(sc.nextLine());
-   
+        int age = shortcut.ageCheck();
+        
+        
     System.out.println("1->Back");
         System.out.print("Enter your Address -> ");
         String address = sc.nextLine();
@@ -441,7 +441,7 @@ public class job_seaker {
             System.out.println("-----------------------------------");
             System.out.println("Your id -> "+ id);
            System.out.println("Create password -> ");
-           String password=sc.nextLine();
+           String password=shortcut.passwordCheck();
            
            try{
                String sqlquery="insert into js_acc values(?,?,?,?)";

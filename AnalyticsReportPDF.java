@@ -54,43 +54,52 @@ public class AnalyticsReportPDF {
         document.add(new Paragraph(" "));
 
         Statement stmt = connection.createStatement();
-        ResultSet jobCountResult = stmt.executeQuery("SELECT COUNT(*) AS employeeCount FROM jobs");
+        ResultSet jobCountResult = stmt.executeQuery("SELECT COUNT(*) AS employeeCount FROM details");
         int employeeCount = jobCountResult.next() ? jobCountResult.getInt("employeeCount") : 0;
 
         ResultSet seekerCountResult = stmt.executeQuery("SELECT COUNT(*) AS seekerCount FROM seaker_data");
         int seekerCount = seekerCountResult.next() ? seekerCountResult.getInt("seekerCount") : 0;
 
+        ResultSet jobCount = stmt.executeQuery("SELECT COUNT(*) AS jobCount FROM jobs");
+        int postCount = jobCount.next() ? jobCount.getInt("jobCount") : 0;
+
+
         document.add(new Paragraph("Total Employees in Company: " + employeeCount));
         document.add(new Paragraph("Total Job Seekers in Application: " + seekerCount));
+        document.add(new Paragraph("Total Available post in Company: " + postCount));
+
         document.add(new Paragraph(" "));
 
         jobCountResult.close();
         seekerCountResult.close();
+        jobCount.close();
         stmt.close();
     }
 
     private static void addJobDetails(Document document, Connection connection) throws Exception {
-        Paragraph detailsHeading = new Paragraph("Employee (Job Posting) Details", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.BLACK));
+        Paragraph detailsHeading = new Paragraph("Employee  Details", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.BLACK));
         document.add(detailsHeading);
         document.add(new Paragraph(" "));
 
-        PdfPTable table = new PdfPTable(5);
+        PdfPTable table = new PdfPTable(4);
         table.setWidthPercentage(100);
-        table.addCell("S.No");
-        table.addCell("Company");
-        table.addCell("Post");
-        table.addCell("Location");
-        table.addCell("Available Posts");
+        table.addCell("Emp ID");
+        table.addCell("NAME");
+        table.addCell("Mobile Num");
+        table.addCell("MAIL");
+        // table.addCell("");
 
         Statement stmt = connection.createStatement();
-        ResultSet resultSet = stmt.executeQuery("SELECT sno, company, post, location, availablepost FROM jobs");
+        ResultSet resultSet = stmt.executeQuery("SELECT id,name,mobile_no,mail FROM details");
 
         while (resultSet.next()) {
-            table.addCell(String.valueOf(resultSet.getInt("sno")));
-            table.addCell(resultSet.getString("company"));
-            table.addCell(resultSet.getString("post"));
-            table.addCell(resultSet.getString("location"));
-            table.addCell(String.valueOf(resultSet.getInt("availablepost")));
+            table.addCell(String.valueOf(resultSet.getInt("id")));
+            table.addCell(resultSet.getString("name"));
+            // table.addCell(resultSet.getString("mobile_no"));
+            table.addCell(String.valueOf(resultSet.getLong("mobile_no")));
+
+            table.addCell(resultSet.getString("mail"));
+            // table.addCell(String.valueOf(resultSet.getInt("availablepost")));
         }
 
         document.add(table);

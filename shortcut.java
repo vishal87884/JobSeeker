@@ -23,6 +23,11 @@ public class shortcut {
     static Scanner scanner = job_seaker.sc;
 
     public static int changeformat(String st){
+        if (st.matches("0")) {
+            System.out.println("Exiting...");
+            job_seaker.acc();
+
+        }
         try{return Integer.parseInt(st);}
         catch(Exception e){
             System.out.print("Do not enter invalid");
@@ -38,7 +43,10 @@ public class shortcut {
         // sc.next();
         String phone_no_string = scanner.nextLine().toLowerCase();
         phone_no_string = phone_no_string.replace(" ", "");
-        
+        if (phone_no_string.matches("0")) {
+            System.out.println("Exiting....");
+job_seaker.acc();
+        }
         for (int i = 0; i < phone_no_string.length(); i++) {
             if (phone_no_string.charAt(i) >= 'a' && phone_no_string.charAt(i) <= 'z') {
                 System.out.println("--- INVLID FORMAT ---");
@@ -122,7 +130,13 @@ public class shortcut {
             if (n1.matches("[a-z  A-Z\\s]+")) {
                 // System.out.println("Name entered successfully: " );
                 break;
-            } else {
+            }
+            if(n1.matches("0")){
+                System.out.println("Exiting");
+               job_seaker. acc();
+            
+            }
+            else {
                 System.out.println("Invalid input. Please enter a valid name (letters and spaces only).");
             }
 
@@ -208,6 +222,10 @@ public class shortcut {
        while (true) {
         System.out.println("Enter Valid Mail Id :- ");
         String email = scanner.nextLine();
+        if (email.matches("0")) {
+            System.out.println("Exiting...");
+            job_seaker.acc();
+        }
         boolean isCorrect = EMAIL_PATTERN.matcher(email).matches();
 
         if((isCorrect==true) && (email.endsWith(condition2) || email.endsWith(condition1)) ){

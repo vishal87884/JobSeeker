@@ -48,7 +48,8 @@ public class job_seaker {
                         // String [] tempString=new String[1];
                         // tempString[0]= ""+id+"";
                         // ResumeUtils.main(tempString);
-                        ResumeUtils.uploadResume(id);
+                        // ResumeUtils.uploadResume(id);
+                        
                     }
                     else if(choice==2){
                         // System.out.println("APPLY FOR JOBS.");
@@ -255,34 +256,50 @@ public class job_seaker {
     }
     public static int takingdetails(int id) {
         System.out.println("-----------ENTER YOUR PERSONAL DETAILS -----------");
-    
+
+        System.out.println("0->Back");
         System.out.print("Enter your name -> ");
         String name = shortcut.nameFormating();
-    
+      
+    System.out.println("0->Back");
         System.out.print("Enter your mobile number -> ");
         long phonenumber = shortcut.phonenumbertaking();
-    
-        System.out.print("Enter your mail id -> ");
-        String mail = sc.nextLine();
-    
+
+        System.out.println("0->Back");
+        // System.out.print("Enter your mail id -> ");
+        String mail = shortcut.validMailTaking();
+        System.out.println("1->Back");
+
         System.out.print("Enter your age -> ");
         int age = shortcut.changeformat(sc.nextLine());
-    
+   
+    System.out.println("1->Back");
         System.out.print("Enter your Address -> ");
         String address = sc.nextLine();
-    
+        if (address.matches("1")) {
+            System.out.println("Exiting...");
+            job_seaker.acc();
+        }
+        System.out.println("1->Back");
+
         System.out.println("Use (,) to differentiate languages, no spaces.");
         System.out.print("Enter your Skills -> ");
         String skills = sc.nextLine().replace(" ", "");
-    
+        if (skills.matches("1")) {
+            System.out.println("Exiting...");
+            job_seaker.acc();
+        }
+        System.out.println("0-> Back");
         System.out.println("Do you have any experience?");
         System.out.print("1 -> Yes \nAny other number -> No\n-> ");
+        
         int experienceSelection = shortcut.changeformat(sc.nextLine());
     
         if (experienceSelection == 1) {
             experience(id);  // Call to collect experience details
         }
-    
+        System.out.println("0->Back");
+
         System.out.println("Have you completed any projects?");
         System.out.print("1 -> Yes \nAny other number -> No\n-> ");
         int projectSelect = shortcut.changeformat(sc.nextLine());
@@ -502,7 +519,7 @@ public class job_seaker {
             }
 
         }else if(select==3){
-
+Main.main(null);
         }
         else{
             System.out.println("Invalid selection");

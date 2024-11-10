@@ -19,20 +19,23 @@ public class Main {
             System.out.println("2 - Employ");
             System.out.println("3 - Job Seeker");
             System.out.println("4 - Exit...");
+            System.out.println("------------------------");
             // System.out.println("4 - Track application");
             // System.out.println("5 - Exit");
             System.out.print("Enter your choice: ");
 
             if (scanner.hasNextInt()) {
                 int choice = shortcut.changeformat(scanner.nextLine()) ;
-               
+                System.out.println("------------------------");
+
 
                 switch (choice) {
                     case 1:
                         System.out.println("Admin selected.");
+
                         // Call Admin class/methods
+                      Admin.loginAdmin();
                         Admin admin=new Admin();
-                        admin.adminWork(22);
                         break;
                     case 2:
                         System.out.println("Employ selected.");
@@ -49,7 +52,9 @@ public class Main {
                         }else if(selection==2){
                             Employee.employeeLogin();
                         }else if(selection==3){
-                            
+                            main(args);
+
+
                         }else{
                             System.out.println("--------------------------");
                             System.out.println("Invalid selection");

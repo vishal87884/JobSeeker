@@ -80,3 +80,60 @@ create table jobportal.details(
     role varchar(45)
 	);
     
+    --------------------------------------
+
+    CREATE TABLE resume (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(15),
+    experience TEXT,
+    education TEXT,
+    skills TEXT,
+    resume_pdf BLOB,
+    address varchar(255)
+    project varchar(255)
+);
+
+
+https://as2.ftcdn.net/v2/jpg/07/32/87/59/1000_F_732875934_JNylw3c5nXtXXW5Q3cBRiHTJVq2J3Cbs.jpg
+
+
+
+
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
